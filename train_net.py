@@ -101,7 +101,7 @@ class Trainer(DefaultTrainer):
         ]:
             if cfg.MODEL.FASTINST.TEST.PANOPTIC_ON:
                 evaluator_list.append(COCOPanopticEvaluator(dataset_name, output_folder))
-        # COCO
+        # COCO 
         if evaluator_type == "coco_panoptic_seg" and cfg.MODEL.FASTINST.TEST.INSTANCE_ON:
             evaluator_list.append(COCOEvaluator(dataset_name, output_dir=output_folder))
         if evaluator_type == "coco_panoptic_seg" and cfg.MODEL.FASTINST.TEST.SEMANTIC_ON:
