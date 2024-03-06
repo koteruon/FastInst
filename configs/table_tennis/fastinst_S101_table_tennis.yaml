@@ -1,0 +1,12 @@
+_BASE_: FastInst_table_tennis_Base.yaml
+MODEL:
+  BACKBONE: 
+    NAME: "build_resnest_backbone"
+  # WEIGHTS: "output/fastinst_s101_table_tennis_det2_0220/model_final.pth"
+  # WEIGHTS: "swinv2_tiny_patch4_window8_256.pkl"
+  # WEIGHTS: ""
+  RESNETS:
+    DEPTH: 101
+  FASTINST:
+    DEC_LAYERS: 5
+OUTPUT_DIR: "output/fastinst_s101_T5_0307"
