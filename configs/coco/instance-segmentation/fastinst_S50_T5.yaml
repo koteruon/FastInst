@@ -4,7 +4,7 @@ MODEL:
     NAME: "build_resnest_backbone"
   # WEIGHTS: "swinv2_tiny_patch4_window8_256.pth"
   RESNETS:
-    DEPTH: 101
+    DEPTH: 50
   FASTINST:
     DEC_LAYERS: 5
-OUTPUT_DIR: "output/coco/fastinst_S101_T3_0223"
+OUTPUT_DIR: "output/coco/fastinst_S50_T5_0312"
