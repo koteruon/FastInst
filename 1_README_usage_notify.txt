@@ -1,10 +1,6 @@
 Color code(In RGB):
-Green: 46 139 87 (Nothing)
-Yellow:255 215 0 (Person)
-Blue: 0 154 205 (Table)
-Red: 238 0 0 (Paddle)
-Brown: 139 115 85 (referee)
-Purple: 104 34 139 (scoreboard)
+Green: 46 139 87 (Nothing) | Blue: 0 154 205 (Table) | Brown: 139 115 85 (referee)
+Yellow:255 215 0 (Person)  | Red:  238 0 0 (Paddle)  | Purple: 104 34 139 (scoreboard)
 
 1: Detectron's video visulizer(In Detectron2/utills/video_visulizer) doesn't support SEGMENTATION mode with videos, hence you have to replace the following code:
 if self._instance_mode == ColorMode.IMAGE and self.metadata.get("thing_colors"):
@@ -24,8 +20,8 @@ also, don't forget to set the  thing_classes and thing_colors at Detectron2/util
 MetadataCatalog.get("table-tennis_val").thing_classes = [' ', 'person', 'table', 'paddle', 'referee', 'scoreboard']
 MetadataCatalog.get("table-tennis_val").thing_colors =[(46, 139, 87), (255, 215, 0), (0, 154, 205), (238, 0, 0), (139, 115 , 85), (104, 34, 139)]
 
-There's an error at demo/predictor, don't forget to replace the confidence threshold.
-start at line 75
+2: There's an error in demo/predictor, don't forget to put the confidence threshold.
+start at line 75, correct it with the following code.
 def run_on_video(self, video, confidence_threshold):
         """
         Visualizes predictions on frames of the input video.

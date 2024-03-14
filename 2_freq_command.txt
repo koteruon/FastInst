@@ -11,8 +11,7 @@ Test train Model:
 python train_net.py --config-file configs/table_tennis/fastinst_S101_table_tennis.yaml
 
 To inference video:
-python demo/demo.py --config-file configs/table_tennis/fastinst_R101_table_tennis.yaml --video-input f-3_video_trim1_2_2.mp4 --output output/video_output  --confidence-threshold 0.75
-  
+python demo/demo.py --config-file configs/table_tennis/fastinst_S50_T3_table_tennis.yaml --video-input f-3_video_trim1_2_2.mp4 --output output/video_output  --confidence-threshold 0.75
   
 To inference Image:
 python demo/demo.py --config-file configs/table_tennis/fastinst_S50_T3_table_tennis.yaml --input datasets/table-tennis/val/data/f-3_frame0950.jpg --output output/  
