@@ -70,7 +70,8 @@ class BaseFPN(nn.Module):
                 padding=1,
                 bias=use_bias,
                 norm=output_norm,
-                activation=F.relu,
+                # activation=F.relu,
+                activation=F.gelu,
             )
             weight_init.c2_xavier_fill(lateral_conv)
             weight_init.c2_xavier_fill(output_conv)

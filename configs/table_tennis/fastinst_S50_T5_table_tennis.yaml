@@ -1,0 +1,10 @@
+_BASE_: FastInst_table_tennis_Base.yaml
+MODEL:
+  BACKBONE: 
+    NAME: "build_resnest_backbone"
+  WEIGHTS: "output/table_tennis/4_fastinst_s50_T5_0311/model_0034999.pth" #inference
+  RESNETS:
+    DEPTH: 50
+  FASTINST:
+    DEC_LAYERS: 5
+OUTPUT_DIR: "output/fastinst_s50_T5_0311"

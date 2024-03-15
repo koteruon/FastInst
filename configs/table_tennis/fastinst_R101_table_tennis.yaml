@@ -2,9 +2,8 @@ _BASE_: FastInst_table_tennis_Base.yaml
 MODEL:
   BACKBONE: 
     NAME: "build_resnet_backbone"
-  
-  # WEIGHTS: "R-101.pkl"
-  WEIGHTS: "output/table_tennis/2_fastinst_R101_table_tennis_0219/model_final.pth"
+  WEIGHTS: "R-101.pkl"
+  # WEIGHTS: "output/table_tennis/2_fastinst_R101_table_tennis_0219/model_final.pth" #inference
   RESNETS:
     DEPTH: 101
   FASTINST:

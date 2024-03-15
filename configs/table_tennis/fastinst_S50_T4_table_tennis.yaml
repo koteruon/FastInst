@@ -6,5 +6,5 @@ MODEL:
   RESNETS:
     DEPTH: 50
   FASTINST:
-    DEC_LAYERS: 3
-OUTPUT_DIR: "output/fastinst_s50_T3_0311"
+    DEC_LAYERS: 4
+OUTPUT_DIR: "output/fastinst_s50_T5_0311"

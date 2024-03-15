@@ -40,7 +40,8 @@ class QueryProposal(nn.Module):
 
         self.conv_proposal_cls_logits = nn.Sequential(
             nn.Conv2d(num_features, num_features, kernel_size=3, stride=1, padding=1),
-            nn.ReLU(inplace=True),
+            # nn.ReLU(inplace=True),
+            nn.GELU,
             nn.Conv2d(num_features, num_classes + 1, kernel_size=1, stride=1, padding=0),
         )
 
@@ -107,7 +108,8 @@ class QueryProposal(nn.Module):
 class SelfAttentionLayer(nn.Module):
 
     def __init__(self, d_model, nhead, dropout=0.0,
-                 activation="relu", normalize_before=False):
+                 activation="gelu", normalize_before=False):
+                #  activation="relu", normalize_before=False):
         super().__init__()
         self.self_attn = nn.MultiheadAttention(d_model, nhead, dropout=dropout)
 
@@ -165,7 +167,8 @@ class SelfAttentionLayer(nn.Module):
 class CrossAttentionLayer(nn.Module):
 
     def __init__(self, d_model, nhead, dropout=0.0,
-                 activation="relu", normalize_before=False):
+                #  activation="relu", normalize_before=False):
+                 activation="gelu", normalize_before=False):
         super().__init__()
         self.multihead_attn = nn.MultiheadAttention(d_model, nhead, dropout=dropout)
 
@@ -228,7 +231,8 @@ class CrossAttentionLayer(nn.Module):
 class FFNLayer(nn.Module):
 
     def __init__(self, d_model, dim_feedforward=2048, dropout=0.0,
-                 activation="relu", normalize_before=False):
+                #  activation="relu", normalize_before=False):
+                 activation="gelu", normalize_before=False):
         super().__init__()
         # Implementation of Feedforward model
         self.linear1 = nn.Linear(d_model, dim_feedforward)
@@ -279,5 +283,6 @@ class MLP(nn.Module):
 
     def forward(self, x):
         for i, layer in enumerate(self.layers):
-            x = F.relu(layer(x)) if i < self.num_layers - 1 else layer(x)
+            # x = F.relu(layer(x)) if i < self.num_layers - 1 else layer(x)
+            x = F.gelu(layer(x)) if i < self.num_layers - 1 else layer(x)
         return x
