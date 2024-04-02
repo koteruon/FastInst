@@ -196,9 +196,11 @@ if __name__ == "__main__":
         for vis_frame in tqdm.tqdm(demo.run_on_video(video, args.confidence_threshold), total=num_frames):
             if args.output:
                 output_file.write(vis_frame)
+                # print(vis_frame)
             else:
                 cv2.namedWindow(basename, cv2.WINDOW_NORMAL)
                 cv2.imshow(basename, vis_frame)
+                # print(vis_frame)
                 if cv2.waitKey(1) == 27:
                     break  # esc to quit
         video.release()

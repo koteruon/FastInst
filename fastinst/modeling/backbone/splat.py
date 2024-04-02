@@ -44,8 +44,8 @@ class SplAtConv2d(Module):
         self.use_bn = norm is not None
         if self.use_bn:
             self.bn0 = get_norm(norm, channels*radix)
-        # self.relu = ReLU(inplace=True)
-        self.gelu = GELU(inplace=True)
+        self.relu = ReLU(inplace=True)
+        # self.gelu = GELU(inplace=True)
         self.fc1 = Conv2d(channels, inter_channels, 1, groups=self.cardinality)
         if self.use_bn:
             self.bn1 = get_norm(norm, inter_channels)
@@ -60,8 +60,8 @@ class SplAtConv2d(Module):
             x = self.bn0(x)
         if self.dropblock_prob > 0.0:
             x = self.dropblock(x)
-        # x = self.relu(x)
-        x = self.gelu(x)
+        x = self.relu(x)
+        # x = self.gelu(x)
 
         batch, rchannel = x.shape[:2]
         if self.radix > 1:
@@ -74,8 +74,8 @@ class SplAtConv2d(Module):
 
         if self.use_bn:
             gap = self.bn1(gap)
-        # gap = self.relu(gap)
-        gap = self.gelu(gap)
+        gap = self.relu(gap)
+        # gap = self.gelu(gap)
 
         atten = self.fc2(gap)
         atten = self.rsoftmax(atten).view(batch, -1, 1, 1)
@@ -161,8 +161,8 @@ class SplAtConv2d_dcn(Module):
             x = self.bn0(x)
         if self.dropblock_prob > 0.0:
             x = self.dropblock(x)
-        # x = self.relu(x)
-        x = self.gelu(x)
+        x = self.relu(x)
+        # x = self.gelu(x)
 
         batch, rchannel = x.shape[:2]
         if self.radix > 1:
@@ -175,8 +175,8 @@ class SplAtConv2d_dcn(Module):
 
         if self.use_bn:
             gap = self.bn1(gap)
-        # gap = self.relu(gap)
-        gap = self.gelu(gap)
+        gap = self.relu(gap)
+        # gap = self.gelu(gap)
 
         atten = self.fc2(gap)
         atten = self.rsoftmax(atten).view(batch, -1, 1, 1)

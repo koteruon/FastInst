@@ -95,7 +95,7 @@ class VisualizationDemo(object):
                 predictions = predictions["instances"].to(self.cpu_device)
                 predictions = predictions[predictions.scores >
                                           confidence_threshold]
-                vis_frame = video_visualizer.draw_instance_predictions(
+                vis_frame, prediction_draw_instance_predictions = video_visualizer.draw_instance_predictions(
                     frame, predictions)
 
             # elif "instances" in predictions:
@@ -108,7 +108,7 @@ class VisualizationDemo(object):
 
             # Converts Matplotlib RGB format to OpenCV BGR format
             vis_frame = cv2.cvtColor(vis_frame.get_image(), cv2.COLOR_RGB2BGR)
-            return vis_frame
+            return vis_frame, prediction_draw_instance_predictions
 
         frame_gen = self._frame_from_video(video)
         if self.parallel:

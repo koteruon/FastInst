@@ -1,18 +1,21 @@
 To test the Model:
-python train_net.py --eval-only --num-gpus 1 --config-file configs/table_tennis/fastinst_S101_table_tennis.yaml MODEL.WEIGHTS output/fastinst_s101_table_tennis_det2_0220/model_final.pth
+python train_net.py --eval-only --num-gpus 1 --config-file configs/table_tennis/fastinst_S50_T4_table_tennis.yaml MODEL.WEIGHTS output/table_tennis/fastinst_s50_T4_GN_gelu_E2_0319/model_0064999.pth
 
 To analyze the model:
 python tools/analyze_model.py --tasks speed --config-file configs/table_tennis/fastinst_R101_table_tennis.yaml MODEL.WEIGHTS output/fastinst_r101_table_tennis_0121/model_final.pth
 
 To train a Model:
-python train_net.py --config-file configs/coco/instance-segmentation/fastinst_S50_T5.yaml
+python train_net.py --config-file configs/coco/instance-segmentation/fastinst_R101_ppm-fpn_x3_640.yaml
 
 Test train Model:
-python train_net.py --config-file configs/table_tennis/fastinst_S101_table_tennis.yaml
+python train_net.py --config-file configs/coco/instance-segmentation/fastinst_S50_T4.yaml
 
 To inference video:
-python demo/demo.py --config-file configs/table_tennis/fastinst_S50_T3_table_tennis.yaml --video-input f-3_video_trim1_2_2.mp4 --output output/video_output  --confidence-threshold 0.75
-  
+python demo/demo.py --config-file configs/table_tennis/fastinst_S50_T4_table_tennis.yaml --video-input f-3_video_trim1_2_2.mp4 --output output/video_output  --confidence-threshold 0.75
+
+python demo/demo_yoson.py --config-file configs/table_tennis/fastinst_S50_T4_table_tennis.yaml --video-input f-3_video_trim1_2_2.mp4 --output output/video_output  --confidence-threshold 0.75
+
+
 To inference Image:
 python demo/demo.py --config-file configs/table_tennis/fastinst_S50_T3_table_tennis.yaml --input datasets/table-tennis/val/data/f-3_frame0950.jpg --output output/  
 
