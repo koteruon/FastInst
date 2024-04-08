@@ -1,10 +1,10 @@
 _BASE_: Fast-COCO-InstanceSegmentation.yaml
 MODEL:
   BACKBONE: 
-    NAME: "build_resnet_backbone"
+    NAME: "build_resnest_backbone"
   # WEIGHTS: "swinv2_tiny_patch4_window8_256.pth"
   RESNETS:
-    DEPTH: 101
+    DEPTH: 50
   FASTINST:
     DEC_LAYERS: 5
-OUTPUT_DIR: "output/coco/fastinst_R101_T5_0327"
+OUTPUT_DIR: "output/coco/fastinst_coco_S50_T5_0403"

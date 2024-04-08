@@ -3,7 +3,7 @@
 import torch
 from torch import nn
 import torch.nn.functional as F
-from torch.nn import Module, Linear, BatchNorm2d, ReLU, GELU
+from torch.nn import Module, Linear, BatchNorm3d, ReLU, GELU
 from torch.nn.modules.utils import _pair
 
 from detectron2.layers import (

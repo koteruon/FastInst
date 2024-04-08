@@ -38,7 +38,7 @@ class ResNestBottleneck(nn.Module):
             first_dilation=None,
             act_layer=nn.ReLU,
             # act_layer=nn.GELU,
-            norm_layer=nn.BatchNorm2d,
+            norm_layer=nn.BatchNorm3d,
             # norm_layer= nn.GroupNorm,
             attn_layer=None,
             aa_layer=None,
@@ -274,6 +274,6 @@ def build_resnest_backbone(cfg, input_shape):
         stage_blocks.append("ResNestBottleneck")
     # resnest 101d
     model = ResNet(stage_blocks, layers, stem_type='deep', stem_width=64, avg_down=True, base_width=64, 
-                #    norm_layer=nn.GroupNorm,
+                #    norm_layer=norm,
                    cardinality=1,block_args=dict(radix=2, avd=True, avd_first=False))
     return model

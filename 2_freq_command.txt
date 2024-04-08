@@ -8,7 +8,7 @@ To train a Model:
 python train_net.py --config-file configs/coco/instance-segmentation/fastinst_R101_ppm-fpn_x3_640.yaml
 
 Test train Model:
-python train_net.py --config-file configs/coco/instance-segmentation/fastinst_S50_T4.yaml
+python train_net.py --config-file configs/coco/instance-segmentation/fastinst_S50_T5.yaml
 
 To inference video:
 python demo/demo.py --config-file configs/table_tennis/fastinst_S50_T4_table_tennis.yaml --video-input f-3_video_trim1_2_2.mp4 --output output/video_output  --confidence-threshold 0.75
