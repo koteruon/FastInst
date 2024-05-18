@@ -185,11 +185,6 @@ if __name__ == "__main__":
         cv2.destroyAllWindows()
 
 
-
-
-
-
-
     elif args.video_input:
         video = cv2.VideoCapture(args.video_input)
         width = int(video.get(cv2.CAP_PROP_FRAME_WIDTH))
@@ -254,7 +249,6 @@ if __name__ == "__main__":
         # start_time = time.perf_counter()
         # for vis_frame, pred in tqdm.tqdm(demo.run_on_video(video, args.confidence_threshold), total=num_frames):
         for vis_frame, pred in demo.run_on_video(video, args.confidence_threshold):
-            
             
             # Calculate frames per second
             frame_count += 1
@@ -630,7 +624,7 @@ if __name__ == "__main__":
                 print('cropped_merge', cropped_merge.shape)
                 padded_cropped_merge = np.pad(cropped_merge, ((top_pad, bottom_pad), (left_pad, right_pad)), mode='constant')      # (0, 0): grayscale         # padded_cropped_merge = np.pad(cropped_merge, ((top_pad, bottom_pad), (left_pad, right_pad), (0, 0)), mode='constant')
                 print('padded_cropped_merge', padded_cropped_merge.shape)
-                # cv2.imwrite('./table-tennis/label_mask/merge_R/merge_R_' + 'frame_' + str(frame_count) + '.png', padded_cropped_merge)
+                cv2.imwrite('./table-tennis/label_mask/merge_R/merge_R_' + 'frame_' + str(frame_count) + '.png', padded_cropped_merge)
                 cv2.putText(padded_cropped_merge, "Frame: " + str(frame_count), (10, 50), cv2.FONT_HERSHEY_SIMPLEX, 1.5, (0, 0, 255), 5, cv2.LINE_4)
                 # cv2.namedWindow('merge_mask', 0)
                 # cv2.imshow('merge_mask', padded_cropped_merge)

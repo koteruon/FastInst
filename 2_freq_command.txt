@@ -1,5 +1,5 @@
 To test the Model:
-python train_net.py --eval-only --num-gpus 1 --config-file configs/table_tennis/fastinst_S50_T4_table_tennis.yaml MODEL.WEIGHTS output/table_tennis/fastinst_s50_T4_GN_gelu_E2_0319/model_0064999.pth
+python train_net.py --eval-only --num-gpus 1 --config-file configs/coco/instance-segmentation/fastinst_S50_T5.yaml MODEL.WEIGHTS output/coco/fastinst_coco_S50_T5_CA_0502/model_0349999.pth
 
 To analyze the model:
 python tools/analyze_model.py --tasks speed --config-file configs/table_tennis/fastinst_R101_table_tennis.yaml MODEL.WEIGHTS output/fastinst_r101_table_tennis_0121/model_final.pth
@@ -11,14 +11,18 @@ Test train Model:
 python train_net.py --config-file configs/coco/instance-segmentation/fastinst_S50_T5.yaml
 
 To inference video:
-python demo/demo.py --config-file configs/table_tennis/fastinst_S50_T4_table_tennis.yaml --video-input f-3_video_trim1_2_2.mp4 --output output/video_output  --confidence-threshold 0.75
+python demo/demo.py --config-file configs/table_tennis/fastinst_S50_T5_table_tennis.yaml --video-input IMG_side_20231113-141215.mov --output output/video_output  --confidence-threshold 0.75
 
-python demo/demo_yoson.py --config-file configs/table_tennis/fastinst_S50_T4_table_tennis.yaml --video-input f-3_video_trim1_2_2.mp4 --output output/video_output  --confidence-threshold 0.75
+python demo/demo_paddle_any.py --config-file configs/table_tennis/fastinst_S50_T4_table_tennis.yaml --video-input IMG_side_20231113-141215.mov --output output/video_output  --confidence-threshold 0.75
 
+python demo/demo_paddle_any_yun.py --config-file configs/table_tennis/fastinst_S50_T5_table_tennis.yaml --video-input /home/chenzy/FastInst-main/手勢_裁切影片/手勢_原始影片/正手/IMG_7390_Trim.mp4 --output output/video_output  --confidence-threshold 0.75
 
 To inference Image:
-python demo/demo.py --config-file configs/table_tennis/fastinst_S50_T3_table_tennis.yaml --input datasets/table-tennis/val/data/f-3_frame0950.jpg --output output/  
+python demo/demo.py --config-file configs/table_tennis/fastinst_S50_T5_table_tennis.yaml --input datasets/table-tennis/train/data/f-3_frame0930.jpg --output output/  --confidence-threshold 0.75
 
 To inference a set of Images:
 python demo/demo.py --config-file configs/table_tennis/fastinst_R101_table_tennis.yaml --input datasets/table-tennis/train/data/*.jpg --output output/  
 
+tensorboard --logdir output/coco --port 8008
+
+python /home/chenzy/FastInst-main/demo/add_weight_img.py

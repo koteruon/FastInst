@@ -10,6 +10,7 @@ from .utils import TRANSFORMER_DECODER_REGISTRY, QueryProposal, \
     CrossAttentionLayer, SelfAttentionLayer, FFNLayer, MLP
 
 
+
 @TRANSFORMER_DECODER_REGISTRY.register()
 class FastInstDecoder(nn.Module):
 
@@ -61,25 +62,26 @@ class FastInstDecoder(nn.Module):
         self.transformer_query_ffn_layers = nn.ModuleList()
         self.transformer_mask_cross_attention_layers = nn.ModuleList()
         self.transformer_mask_ffn_layers = nn.ModuleList()
+
         for idx in range(self.num_layers):
             self.transformer_query_cross_attention_layers.append(
                 CrossAttentionLayer(
-                    d_model=hidden_dim, nhead=nheads, dropout=0.0, normalize_before=pre_norm
+                    d_model=hidden_dim, nhead=nheads, dropout=0.2, normalize_before=pre_norm
                 )
             )
             self.transformer_query_self_attention_layers.append(
                 SelfAttentionLayer(
-                    d_model=hidden_dim, nhead=nheads, dropout=0.0, normalize_before=pre_norm
+                    d_model=hidden_dim, nhead=nheads, dropout=0.2, normalize_before=pre_norm
                 )
             )
             self.transformer_query_ffn_layers.append(
                 FFNLayer(
-                    d_model=hidden_dim, dim_feedforward=dim_feedforward, dropout=0.0, normalize_before=pre_norm
+                    d_model=hidden_dim, dim_feedforward=dim_feedforward, dropout=0.2, normalize_before=pre_norm
                 )
             )
             self.transformer_mask_cross_attention_layers.append(
                 CrossAttentionLayer(
-                    d_model=hidden_dim, nhead=nheads, dropout=0.0, normalize_before=pre_norm
+                    d_model=hidden_dim, nhead=nheads, dropout=0.2, normalize_before=pre_norm
                 )
             )
             self.transformer_mask_ffn_layers.append(
@@ -92,6 +94,7 @@ class FastInstDecoder(nn.Module):
         self.class_embed_layers = nn.ModuleList()
         self.mask_embed_layers = nn.ModuleList()
         self.mask_features_layers = nn.ModuleList()
+        
         for idx in range(self.num_layers + 1):
             self.decoder_query_norm_layers.append(nn.LayerNorm(hidden_dim))
             self.class_embed_layers.append(MLP(hidden_dim, hidden_dim, num_classes + 1, 3))

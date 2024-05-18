@@ -38,7 +38,7 @@ class ResNestBottleneck(nn.Module):
             act_layer=nn.ReLU,
             # act_layer=nn.GELU,
             # norm_layer=nn.GroupNorm,
-            norm_layer=nn.BatchNorm3d,
+            norm_layer=nn.BatchNorm2d,
             attn_layer=None,
             aa_layer=None,
             drop_block=None,
@@ -210,7 +210,7 @@ BLOCK_TYPE = {
 
 def downsample_conv(
         in_channels, out_channels, kernel_size, stride=1, dilation=1, first_dilation=None, norm_layer=None):
-    norm_layer = norm_layer or nn.BatchNorm3d
+    norm_layer = norm_layer or nn.BatchNorm2d
     kernel_size = 1 if stride == 1 and dilation == 1 else kernel_size
     first_dilation = (first_dilation or dilation) if kernel_size > 1 else 1
     p = get_padding(kernel_size, stride, first_dilation)
@@ -224,7 +224,7 @@ def downsample_conv(
 
 def downsample_avg(
         in_channels, out_channels, kernel_size, stride=1, dilation=1, first_dilation=None, norm_layer=None):
-    norm_layer = norm_layer or nn.BatchNorm3d
+    norm_layer = norm_layer or nn.BatchNorm2d
     avg_stride = stride if dilation == 1 else 1
     if stride == 1 and dilation == 1:
         pool = nn.Identity()
@@ -371,7 +371,7 @@ class ResNet(Backbone):
                  output_stride=32, block_reduce_first=1, 
                  down_kernel_size=1, avg_down=False,
                  act_layer=nn.ReLU, 
-                 norm_layer=nn.BatchNorm3d, 
+                 norm_layer=nn.BatchNorm2d, 
                  aa_layer=None, drop_rate=0.0, drop_path_rate=0.,
                  drop_block_rate=0., global_pool='avg', 
                  avd = False,
@@ -433,7 +433,7 @@ class ResNet(Backbone):
         self.feature_info.extend(stage_feature_info)
 
         for n, m in self.named_modules():
-            if isinstance(m, nn.BatchNorm3d):
+            if isinstance(m, nn.BatchNorm2d):
                 nn.init.constant_(m.weight, 1.)
                 nn.init.constant_(m.bias, 0.)
         if zero_init_last_bn:

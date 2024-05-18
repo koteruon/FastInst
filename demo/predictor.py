@@ -34,7 +34,7 @@ class VisualizationDemo(object):
         else:
             self.predictor = DefaultPredictor(cfg)
 
-    def run_on_image(self, image):
+    def run_on_image(self, image, confidence_threshold):
         """
         Args:
             image (np.ndarray): an image of shape (H, W, C) (in BGR order).
@@ -60,6 +60,9 @@ class VisualizationDemo(object):
                 )
             if "instances" in predictions:
                 instances = predictions["instances"].to(self.cpu_device)
+                # print(instances.scores)
+                instances = instances[instances.scores >
+                                          confidence_threshold]
                 vis_output = visualizer.draw_instance_predictions(predictions=instances)
 
         return predictions, vis_output
@@ -72,7 +75,7 @@ class VisualizationDemo(object):
             else:
                 break
 
-    def run_on_video(self, video, confidence_threshold):
+    def run_on_video(self, video, confidence_threshold, method_flag):
         """
         Visualizes predictions on frames of the input video.
         Args:
@@ -95,20 +98,25 @@ class VisualizationDemo(object):
                 predictions = predictions["instances"].to(self.cpu_device)
                 predictions = predictions[predictions.scores >
                                           confidence_threshold]
-                vis_frame, prediction_draw_instance_predictions = video_visualizer.draw_instance_predictions(
-                    frame, predictions)
-
+                if method_flag == 1:
+                 vis_frame, prediction_draw_instance_predictions = video_visualizer.draw_instance_predictions(frame, predictions, method_flag)
+            # Converts Matplotlib RGB format to OpenCV BGR format
+                else:
+                    vis_frame = video_visualizer.draw_instance_predictions(frame, predictions, method_flag=0)
             # elif "instances" in predictions:
-            #     predictions = predictions["instances"].to(self.cpu_device)
-            #     vis_frame = video_visualizer.draw_instance_predictions(frame, predictions)
+                # predictions = predictions["instances"].to(self.cpu_device)
+                # vis_frame = video_visualizer.draw_instance_predictions(frame, predictions)
             elif "sem_seg" in predictions:
                 vis_frame = video_visualizer.draw_sem_seg(
                     frame, predictions["sem_seg"].argmax(dim=0).to(self.cpu_device)
                 )
 
-            # Converts Matplotlib RGB format to OpenCV BGR format
             vis_frame = cv2.cvtColor(vis_frame.get_image(), cv2.COLOR_RGB2BGR)
-            return vis_frame, prediction_draw_instance_predictions
+            if method_flag == 1:
+                 return vis_frame , prediction_draw_instance_predictions
+            # Converts Matplotlib RGB format to OpenCV BGR format
+            else:
+                return vis_frame 
 
         frame_gen = self._frame_from_video(video)
         if self.parallel:

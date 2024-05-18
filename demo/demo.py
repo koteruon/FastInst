@@ -122,7 +122,7 @@ if __name__ == "__main__":
             img = read_image(path, format="BGR")
             
             start_time = time.time()
-            predictions, visualized_output = demo.run_on_image(img)
+            predictions, visualized_output = demo.run_on_image(img, args.confidence_threshold)
             logger.info(
                 "{}: {} in {:.2f}s".format(
                     path,
@@ -193,7 +193,7 @@ if __name__ == "__main__":
             )
         assert os.path.isfile(args.video_input)
         # for vis_frame in tqdm.tqdm(demo.run_on_video(video), total=num_frames):
-        for vis_frame in tqdm.tqdm(demo.run_on_video(video, args.confidence_threshold), total=num_frames):
+        for vis_frame in tqdm.tqdm(demo.run_on_video(video, args.confidence_threshold, 0), total=num_frames, ):
             if args.output:
                 output_file.write(vis_frame)
                 # print(vis_frame)
