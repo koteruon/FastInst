@@ -54,8 +54,9 @@ class BiLSTM(nn.Module):
 class Conv1DNet(nn.Module):
     def __init__(self, num_classes):
         super(Conv1DNet, self).__init__()
+        # self.conv1 = nn.Conv1d(10, 64, kernel_size=3, padding=1) #100d
+        # self.conv1 = nn.Conv1d(10, 64, kernel_size=3, padding=1) #99d
         self.conv1 = nn.Conv1d(10, 64, kernel_size=3, padding=1)
-        # self.conv1 = nn.Conv1d(3, 64, kernel_size=3, padding=1)
         self.relu1 = nn.ReLU()
         self.maxpool1 = nn.MaxPool1d(kernel_size=2)
        
@@ -69,6 +70,7 @@ class Conv1DNet(nn.Module):
         self.flatten = nn.Flatten()
       
         self.fc1 = nn.Linear(6400, 64)  # Adjust the input size based on the output shape of the last conv layer
+        # self.fc1 = nn.Linear(256 * 3, 64)
         # self.fc1 = nn.Linear(2, 64)
         self.relu4 = nn.ReLU()
         self.fc2 = nn.Linear(64, num_classes)
@@ -90,7 +92,39 @@ class Conv1DNet(nn.Module):
         x = self.relu4(x)
         x = self.fc2(x)
         return x
-    
+class Conv1DNet_ori(nn.Module):
+    def __init__(self, num_classes):
+        super(Conv1DNet_ori, self).__init__()
+        self.conv1 = nn.Conv1d(10, 64, kernel_size=3, padding=1)
+        self.relu1 = nn.ReLU()
+        # self.maxpool1 = nn.MaxPool1d(kernel_size=2)
+        self.conv2 = nn.Conv1d(64, 128, kernel_size=3, padding=1)
+        self.relu2 = nn.ReLU()
+        # self.maxpool2 = nn.MaxPool1d(kernel_size=2)
+        self.dropout = nn.Dropout(p=0.2)
+        self.conv3 = nn.Conv1d(128, 256, kernel_size=3, padding=1)
+        self.relu3 = nn.ReLU()
+        self.flatten = nn.Flatten()
+        self.fc1 = nn.Linear(256, 64)  # Adjust the input size based on the output shape of the last conv layer
+        self.relu4 = nn.ReLU()
+        self.fc2 = nn.Linear(64, num_classes)
+
+    def forward(self, x):
+        print('-------------------------------')
+        x = self.conv1(x)
+        x = self.relu1(x)
+        # x = self.maxpool1(x)
+        x = self.conv2(x)
+        x = self.relu2(x)
+        # x = self.maxpool2(x)
+        x = self.dropout(x)
+        x = self.conv3(x)
+        x = self.relu3(x)
+        x = self.flatten(x)
+        x = self.fc1(x)
+        x = self.relu4(x)
+        x = self.fc2(x)
+        return x 
 #Load Data
 
 train_data_list = []
@@ -168,14 +202,15 @@ for i_0 in range(len(cls_0)):
     result = []
     times = len(npy_pose) -(len(npy_pose)%10)
     for j in range(times):
-        temp = npy_pose[j].ravel().tolist()
+        temp = npy_pose[j].ravel().tolist() 
+        # temp = [] # area only
         temp.append(float(data_0_paddle_list[j]))
         result.append(temp)
 
     # print(len(result))
     np_train_data_temp = np.array(result) .reshape(-1, 10, 100)
+    # np_train_data_temp = np.array(result) .reshape(-1, 10, 1)
    
-    
     for k in range(len(np_train_data_temp)):
         train_data_list.append([np_train_data_temp[k], 0])
 
@@ -192,12 +227,14 @@ for i_1 in range(len(cls_1)):
     times = len(npy_pose) -(len(npy_pose)%10)
     for j in range(times):
         temp = npy_pose[j].ravel().tolist()
-        temp.append(float(data_0_paddle_list[j]))
+        # temp = [] # area only
+        temp.append(float(data_1_paddle_list[j]))
         result.append(temp)
 
     np_train_data_temp = np.array(result).reshape(-1, 10, 100)
     # print(len(np_train_data_temp))
-    
+    # np_train_data_temp = np.array(result) .reshape(-1, 10, 1)
+
     for k in range(len(np_train_data_temp)):
         train_data_list.append([np_train_data_temp[k], 1])
 
@@ -214,15 +251,18 @@ for i_2 in range(len(cls_2)):
     times = len(npy_pose) -(len(npy_pose)%10)
     for j in range(times):
         temp = npy_pose[j].ravel().tolist()
+        # temp = [] # area only
         temp.append(float(data_0_paddle_list[j]))
         result.append(temp)
 
     np_train_data_temp = np.array(result).reshape(-1, 10, 100)
+    # np_train_data_temp = np.array(result).reshape(-1, 10, 1)
     # print(len(np_train_data_temp))
     
     for k in range(len(np_train_data_temp)):
         train_data_list.append([np_train_data_temp[k], 2])
 
+'''
 for i_3 in range(len(cls_3)):
     cls_3_txt_path = f'/home/chenzy/FastInst-main/output/video_output/{cls_3[i_3]}_R_paddle.txt'
     f_3 = open(cls_3_txt_path,"r")
@@ -248,9 +288,10 @@ for i_3 in range(len(cls_3)):
     
     for k in range(len(np_train_data_temp)):
         train_data_list.append([np_train_data_temp[k], 3])
-
+'''
 # train_dataset_np.shape()
-
+# print(len(train_data_list))
+# exit()
 dataset = train_data_list
 train_size = int(0.75 * len(dataset))
 val_size = len(dataset) - train_size
@@ -267,7 +308,7 @@ print(len(train_dataset), len(val_dataset), len(test_dataset))
 
 # define training hyperparameters
 INIT_LR = 1e-4
-BATCH_SIZE = 3
+BATCH_SIZE = 2
 EPOCHS = 150
 
 # initialize the train, validation, and test data loaders
@@ -280,7 +321,7 @@ trainSteps = len(train_dataset) // BATCH_SIZE
 valSteps = len(val_dataset) // BATCH_SIZE
 
 # initialize the Conv3DNet model
-print("[INFO] initializing the Conv3DNet model...")
+print("[INFO] initializing the Conv1DNet model...")
 num_classes = 3
 labels = [0,1,2]
 # model = BiLSTM(10,64,100,num_classes)
