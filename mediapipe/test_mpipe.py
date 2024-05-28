@@ -8,11 +8,11 @@ mp_drawing = mp.solutions.drawing_utils          # mediapipe 繪圖方法
 mp_drawing_styles = mp.solutions.drawing_styles  # mediapipe 繪圖樣式
 mp_pose = mp.solutions.pose                      # mediapipe 姿勢偵測
 
-path = r'/home/chenzy/FastInst-main/手勢_裁切影片/手勢_原始影片/反手切/IMG_7408_Trim.mp4'
+path = r'/home/chenzy/FastInst-main/手勢_裁切影片/手勢_原始影片/反手擋+切/IMG_7409_Trim.mp4'
 cap = cv2.VideoCapture(path)
 fps, width, height = cap.get(cv2.CAP_PROP_FPS), int(cap.get(cv2.CAP_PROP_FRAME_WIDTH)), int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
 codec = cv2.VideoWriter_fourcc(*'mp4v')
-output_video = cv2.VideoWriter('/home/chenzy/FastInst-main/mediapipe/IMG_7408_Trim_mediaP.mp4', codec, fps, (int(width/2), height),isColor=True)
+output_video = cv2.VideoWriter('/home/chenzy/FastInst-main/mediapipe/IMG_7409_Trim_mediaP.mp4', codec, fps, (int(width/2), height),isColor=True)
 print(fps, width, height)
 lndmark_list = []
 
@@ -54,7 +54,7 @@ with mp_pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5) as 
             #                           results.pose_landmarks.landmark[i.value].z] for i in mp_pose.PoseLandmark])
                     
             output_video.write(img)
-    np.save('/home/chenzy/FastInst-main/mediapipe/IMG_7408_Trim_mediaP.npy', lndmark_list)
+    np.save('/home/chenzy/FastInst-main/mediapipe/IMG_7409_Trim_mediaP.npy', lndmark_list)
     # print((lndmark_list[0][1].x))
     cap.release()
     output_video.release()

@@ -55,16 +55,21 @@ class Conv1DNet(nn.Module):
     def __init__(self, num_classes):
         super(Conv1DNet, self).__init__()
         self.conv1 = nn.Conv1d(10, 64, kernel_size=3, padding=1)
+        # self.conv1 = nn.Conv1d(3, 64, kernel_size=3, padding=1)
         self.relu1 = nn.ReLU()
         self.maxpool1 = nn.MaxPool1d(kernel_size=2)
+       
         self.conv2 = nn.Conv1d(64, 128, kernel_size=3, padding=1)
         self.relu2 = nn.ReLU()
         self.maxpool2 = nn.MaxPool1d(kernel_size=2)
         self.dropout = nn.Dropout(p=0.2)
+      
         self.conv3 = nn.Conv1d(128, 256, kernel_size=3, padding=1)
         self.relu3 = nn.ReLU()
         self.flatten = nn.Flatten()
+      
         self.fc1 = nn.Linear(6400, 64)  # Adjust the input size based on the output shape of the last conv layer
+        # self.fc1 = nn.Linear(2, 64)
         self.relu4 = nn.ReLU()
         self.fc2 = nn.Linear(64, num_classes)
 
@@ -89,7 +94,42 @@ class Conv1DNet(nn.Module):
 #Load Data
 
 train_data_list = []
+cls_0 = ['IMG_7386','IMG_7388','IMG_7390']
+cls_1 = ['IMG_7394','IMG_7397']
+cls_2 = ['IMG_7404','IMG_7406','IMG_7408']
+cls_3 = ['IMG_7407','IMG_7409'] 
+'''
+data_path = r'/home/chenzy/FastInst-main/output/data_test_1_10f.txt'
+f_0 = open(data_path,"r")
+data_0 = f_0.read()
+# print(data_0.shape)
+train_arr = np.genfromtxt(data_0.splitlines(), delimiter=' ', dtype=float)
+# 將浮點數轉換成整數
+train_arr = train_arr.astype(int)
+# 印出 NumPy 陣列中的第一列
+print(train_arr.shape)
 
+data_label_path = r'/home/chenzy/FastInst-main/output/data_test_1_label_10f_3cls.txt'
+data_label = open(data_label_path,"r")
+data_1 = data_label.read()
+# print(data_0.shape)
+label_arr = np.genfromtxt(data_1.splitlines(), delimiter=' ', dtype=float)
+# 將浮點數轉換成整數
+label_arr = label_arr.astype(int)
+# 印出 NumPy 陣列中的第一列
+print(label_arr.shape)
+
+train_data_list = []
+# test_data_list = []
+for i in range(len(train_arr)):
+#     print(np_train_data_reshape[i].shape())
+    train_data_list.append([train_arr[i], label_arr[i]])
+# train_data_list
+print(train_data_list[1])
+# exit()
+# train_dataset_np = np.array(train_data_list)
+'''
+'''
 for i in range(3):
 
     cls_0_txt_path = f'/home/chenzy/FastInst-main/mediapipe/data/{i}.txt'
@@ -103,6 +143,55 @@ for i in range(3):
     times = len(npy_pose) -(len(npy_pose)%10)
     for j in range(times):
         temp = npy_pose[j].ravel().tolist()
+        # temp.append(float(data_0_paddle_list[j]))
+        result.append(temp)
+
+    np_train_data_temp = np.array(result).reshape(-1, 10,99 )
+    # print(len(np_train_data_temp))
+    
+    for k in range(len(np_train_data_temp)):
+        train_data_list.append([np_train_data_temp[k], i])
+
+# print(train_data_list)
+
+'''
+for i_0 in range(len(cls_0)):
+    cls_0_txt_path = f'/home/chenzy/FastInst-main/output/video_output/{cls_0[i_0]}_R_paddle.txt'
+    f_0 = open(cls_0_txt_path,"r")
+    data_0 = f_0.read()
+    data_0_paddle_list = data_0.split(',')
+    f_0.close()
+    # /home/chenzy/FastInst-main/mediapipe/IMG_7386_Trim_mediaP.npy
+    npy_pose = np.load(f'/home/chenzy/FastInst-main/mediapipe/dataset/{cls_0[i_0]}_Trim_mediaP.npy')
+    # print(len(npy_pose))
+
+    result = []
+    times = len(npy_pose) -(len(npy_pose)%10)
+    for j in range(times):
+        temp = npy_pose[j].ravel().tolist()
+        temp.append(float(data_0_paddle_list[j]))
+        result.append(temp)
+
+    # print(len(result))
+    np_train_data_temp = np.array(result) .reshape(-1, 10, 100)
+   
+    
+    for k in range(len(np_train_data_temp)):
+        train_data_list.append([np_train_data_temp[k], 0])
+
+for i_1 in range(len(cls_1)):
+    cls_1_txt_path = f'/home/chenzy/FastInst-main/output/video_output/{cls_1[i_1]}_R_paddle.txt'
+    f_1 = open(cls_1_txt_path,"r")
+    data_1 = f_1.read()
+    data_1_paddle_list = data_1.split(',')
+    f_1.close()
+    npy_pose = np.load(f'/home/chenzy/FastInst-main/mediapipe/dataset/{cls_1[i_1]}_Trim_mediaP.npy')
+    # print(len(npy_pose))
+
+    result = []
+    times = len(npy_pose) -(len(npy_pose)%10)
+    for j in range(times):
+        temp = npy_pose[j].ravel().tolist()
         temp.append(float(data_0_paddle_list[j]))
         result.append(temp)
 
@@ -110,19 +199,67 @@ for i in range(3):
     # print(len(np_train_data_temp))
     
     for k in range(len(np_train_data_temp)):
-        train_data_list.append([np_train_data_temp[k], i])
+        train_data_list.append([np_train_data_temp[k], 1])
 
-# print(train_data_list)
+for i_2 in range(len(cls_2)):
+    cls_2_txt_path = f'/home/chenzy/FastInst-main/output/video_output/{cls_2[i_2]}_R_paddle.txt'
+    f_2 = open(cls_2_txt_path,"r")
+    data_2 = f_2.read()
+    data_2_paddle_list = data_2.split(',')
+    f_2.close()
+    npy_pose = np.load(f'/home/chenzy/FastInst-main/mediapipe/dataset/{cls_2[i_2]}_Trim_mediaP.npy')
+    # print(len(npy_pose))
+
+    result = []
+    times = len(npy_pose) -(len(npy_pose)%10)
+    for j in range(times):
+        temp = npy_pose[j].ravel().tolist()
+        temp.append(float(data_0_paddle_list[j]))
+        result.append(temp)
+
+    np_train_data_temp = np.array(result).reshape(-1, 10, 100)
+    # print(len(np_train_data_temp))
     
+    for k in range(len(np_train_data_temp)):
+        train_data_list.append([np_train_data_temp[k], 2])
+
+for i_3 in range(len(cls_3)):
+    cls_3_txt_path = f'/home/chenzy/FastInst-main/output/video_output/{cls_3[i_3]}_R_paddle.txt'
+    f_3 = open(cls_3_txt_path,"r")
+    data_3 = f_3.read()
+    data_3_paddle_list = data_3.split(',')
+    f_3.close()
+    npy_pose = np.load(f'/home/chenzy/FastInst-main/mediapipe/dataset/{cls_3[i_3]}_Trim_mediaP.npy')
+
+    result = []
+    if len(npy_pose)%10!=0:
+        times = len(npy_pose) -(len(npy_pose)%10)
+    else:
+        times= len(npy_pose)
+
+    for j in range(times):
+        temp = npy_pose[j].ravel().tolist()
+        # print(j)
+        temp.append(float(data_3_paddle_list[j]))
+        result.append(temp)
+
+    np_train_data_temp = np.array(result).reshape(-1, 10, 100)
+    # print(len(np_train_data_temp))
+    
+    for k in range(len(np_train_data_temp)):
+        train_data_list.append([np_train_data_temp[k], 3])
+
+# train_dataset_np.shape()
+
 dataset = train_data_list
-train_size = int(0.8 * len(dataset))
+train_size = int(0.75 * len(dataset))
 val_size = len(dataset) - train_size
 train_dataset, val_dataset = random_split(dataset, [train_size, val_size])
 print('------')
 print(train_dataset[0][0].shape)
 print(train_dataset[0])
 
-train_size2 = int(0.9 * len(train_dataset))
+train_size2 = int(0.85 * len(train_dataset))
 test_size = len(train_dataset) - train_size2
 train_dataset, test_dataset = random_split(train_dataset, [train_size2, test_size])
 
@@ -130,8 +267,8 @@ print(len(train_dataset), len(val_dataset), len(test_dataset))
 
 # define training hyperparameters
 INIT_LR = 1e-4
-BATCH_SIZE = 5
-EPOCHS = 100
+BATCH_SIZE = 3
+EPOCHS = 150
 
 # initialize the train, validation, and test data loaders
 # trainDataLoader = DataLoader(train_dataset, shuffle=True, batch_size=BATCH_SIZE, drop_last=True)

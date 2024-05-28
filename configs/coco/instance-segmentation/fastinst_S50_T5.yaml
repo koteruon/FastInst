@@ -2,10 +2,10 @@ _BASE_: Fast-COCO-InstanceSegmentation.yaml
 MODEL: 
   BACKBONE: 
     NAME: "build_resnest_backbone"
-  WEIGHTS: "output/coco/fastinst_coco_S50_T5_CA_0508/model_final.pth"
+  WEIGHTS: "/home/chenzy/FastInst-main/output/coco/fastinst_coco_S50_T5_CA_0524/model_final.pth"
   # WEIGHTS: "output/coco/fastinst_coco_S50_T5_CA_0502/model_0349999.pth"
   RESNETS:
     DEPTH: 50
   FASTINST:
     DEC_LAYERS: 5
-OUTPUT_DIR: "output/coco/fastinst_coco_S50_T5_CA_0516"
+OUTPUT_DIR: "output/coco/fastinst_coco_S50_T5_CA_0528"
