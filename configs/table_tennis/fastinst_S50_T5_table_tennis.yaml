@@ -8,4 +8,4 @@ MODEL:
     DEPTH: 50
   FASTINST:
     DEC_LAYERS: 5 
-OUTPUT_DIR: "output/table_tennis/22_fastinst_s50_T5_CA_0418"
+OUTPUT_DIR: "output/table_tennis/23_fastinst_s50_T5_CA_0611"

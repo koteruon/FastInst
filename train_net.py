@@ -59,10 +59,13 @@ from fastinst import (
 )
 
 
-register_coco_instances("table-tennis_train", {}, "datasets/table-tennis/train/annotation/annotations.json", "datasets/table-tennis/train/data")
-register_coco_instances("table-tennis_val", {}, "datasets/table-tennis/val/annotation/annotations.json", "datasets/table-tennis/val/data")
+# register_coco_instances("table-tennis_train", {}, "datasets/table-tennis/train/annotation/annotations.json", "datasets/table-tennis/train/data")
+# register_coco_instances("table-tennis_val", {}, "datasets/table-tennis/val/annotation/annotations.json", "datasets/table-tennis/val/data")
 
+register_coco_instances("table-tennis_train", {}, "datasets/new_table_tennis/ana/train.json", "datasets/new_table_tennis/data")
+register_coco_instances("table-tennis_val", {}, "datasets/new_table_tennis/ana/val.json", "datasets/new_table_tennis/data")
 
+# /home/chenzy/FastInst-main/datasets/table-tennis/train/data/M-5_frame0140.jpg
 class Trainer(DefaultTrainer):
     """
     Extension of the Trainer class adapted to FastInst.

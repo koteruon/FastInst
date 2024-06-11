@@ -5,17 +5,17 @@ To analyze the model:
 python tools/analyze_model.py --tasks speed --config-file configs/table_tennis/fastinst_R101_table_tennis.yaml MODEL.WEIGHTS output/fastinst_r101_table_tennis_0121/model_final.pth
 
 To train a Model:
-python train_net.py --config-file configs/coco/instance-segmentation/fastinst_R101_ppm-fpn_x3_640.yaml
+python train_net.py --config-file /home/chenzy/FastInst-main/configs/table_tennis/fastinst_S50_T5_table_tennis.yaml
 
 Test train Model:
-python train_net.py --config-file configs/coco/instance-segmentation/fastinst_S50_T5.yaml
+python train_net.py --config-file /home/chenzy/FastInst-main/configs/table_tennis/fastinst_S50_T5_table_tennis.yaml
 
 To inference video:
-python demo/demo.py --config-file configs/table_tennis/fastinst_S50_T5_table_tennis.yaml --video-input IMG_side_20231113-141215.mov --output output/video_output  --confidence-threshold 0.75
+python demo/demo.py --config-file configs/table_tennis/fastinst_S50_T5_table_tennis.yaml --video-input /home/chenzy/FastInst-main/new_record/left/bhc_left_2.mp4 --output output/video_output  --confidence-threshold 0.75
 
 python demo/demo_paddle_any.py --config-file configs/table_tennis/fastinst_S50_T4_table_tennis.yaml --video-input IMG_side_20231113-141215.mov --output output/video_output  --confidence-threshold 0.75
 
-python demo/demo_paddle_any_yun.py --config-file configs/table_tennis/fastinst_S50_T5_table_tennis.yaml --video-input /home/chenzy/FastInst-main/手勢_裁切影片/手勢_原始影片/反手切/IMG_7408_Trim.mp4 --output output/video_output  --confidence-threshold 0.75
+python demo/demo_paddle_any_yun.py --config-file configs/table_tennis/fastinst_S50_T5_table_tennis.yaml --video-input /home/chenzy/FastInst-main/new_record/left/bhc_left_2.mp4 --output output/video_output  --confidence-threshold 0.75
 
 To inference Image:
 python demo/demo.py --config-file configs/table_tennis/fastinst_S50_T5_table_tennis.yaml --input datasets/table-tennis/train/data/f-3_frame0930.jpg --output output/  --confidence-threshold 0.75
@@ -23,6 +23,6 @@ python demo/demo.py --config-file configs/table_tennis/fastinst_S50_T5_table_ten
 To inference a set of Images:
 python demo/demo.py --config-file configs/table_tennis/fastinst_R101_table_tennis.yaml --input datasets/table-tennis/train/data/*.jpg --output output/  
 
-tensorboard --logdir output/coco --port 8008
-
+tensorboard --logdir output/table_tennis --port 8008
+tensorboard --logdir output/coco --port 8080
 python /home/chenzy/FastInst-main/demo/add_weight_img.py
