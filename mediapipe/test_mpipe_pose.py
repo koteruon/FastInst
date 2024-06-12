@@ -46,9 +46,9 @@ def detect_pose(video_path, output_video_path, npy_path):
                     landmark_drawing_spec=mp_drawing_styles.get_default_pose_landmarks_style())
                 
 
-                # lndmark_list.append ([[results.pose_landmarks.landmark[i.value].x, \
-                #                           results.pose_landmarks.landmark[i.value].y, \
-                #                           results.pose_landmarks.landmark[i.value].z] for i in mp_pose.PoseLandmark])
+                lndmark_list.append ([[results.pose_landmarks.landmark[i.value].x, \
+                                          results.pose_landmarks.landmark[i.value].y, \
+                                          results.pose_landmarks.landmark[i.value].z] for i in mp_pose.PoseLandmark])
                 
                 # print(results.pose_landmarks)
                 # path_csv_str = "/home/chenzy/FastInst-main/mediapipe/IMG_7386_Trim_mediaP.txt"

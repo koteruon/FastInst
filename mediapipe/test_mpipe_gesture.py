@@ -6,11 +6,11 @@ mp_drawing = mp.solutions.drawing_utils          # mediapipe 繪圖方法
 mp_drawing_styles = mp.solutions.drawing_styles  # mediapipe 繪圖樣式
 mp_hands = mp.solutions.hands                    # mediapipe 偵測手掌方法
 
-path = r'new_record/left/bhc_left_1.mp4'
+path = r'/home/chenzy/FastInst-main/new_record/left/fhpull_left_1.mp4'
 cap = cv2.VideoCapture(path)
 fps, width, height = cap.get(cv2.CAP_PROP_FPS), int(cap.get(cv2.CAP_PROP_FRAME_WIDTH)), int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
 codec = cv2.VideoWriter_fourcc(*'mp4v')
-output_video = cv2.VideoWriter('/home/chenzy/FastInst-main/mediapipe/new_record/left/bhc_left_1.mp4', codec, fps, (int(width), height),isColor=True)
+output_video = cv2.VideoWriter('/home/chenzy/FastInst-main/mediapipe/new_record/left/fhp_left_1_gesture.mp4', codec, fps, (int(width), height),isColor=True)
 # print(fps, width, height)
 lndmark_list = []
 # mediapipe 啟用偵測手掌

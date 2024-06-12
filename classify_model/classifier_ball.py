@@ -49,7 +49,6 @@ class BiLSTM(nn.Module):
         out = self.fc(out[:, -1, :])
 
         return out
-
 # Conv1DNet model
 class Conv1DNet(nn.Module):
     def __init__(self, num_classes):
@@ -69,7 +68,8 @@ class Conv1DNet(nn.Module):
         self.relu3 = nn.ReLU()
         self.flatten = nn.Flatten()
       
-        self.fc1 = nn.Linear(6400, 64)  # Adjust the input size based on the output shape of the last conv layer
+        # self.fc1 = nn.Linear(6400, 64)  # Adjust the input size based on the output shape of the last conv layer
+        self.fc1 = nn.Linear(6144, 64)  # Adjust the input size based on the output shape of the last conv layer
         # self.fc1 = nn.Linear(256 * 3, 64)
         # self.fc1 = nn.Linear(2, 64)
         self.relu4 = nn.ReLU()
@@ -128,10 +128,19 @@ class Conv1DNet_ori(nn.Module):
 #Load Data
 
 train_data_list = []
-cls_0 = ['IMG_7386','IMG_7388','IMG_7390']
-cls_1 = ['IMG_7394','IMG_7397']
-cls_2 = ['IMG_7404','IMG_7406','IMG_7408']
-cls_3 = ['IMG_7407','IMG_7409'] 
+# cls_0 = ['IMG_7386','IMG_7388','IMG_7390']
+# cls_1 = ['IMG_7394','IMG_7397']
+# cls_2 = ['IMG_7404','IMG_7406','IMG_7408']
+# cls_3 = ['IMG_7407','IMG_7409'] 
+cls_0 = ['mediapipe/dataset_new/bhc_left_1.npy','mediapipe/dataset_new/bhc_left_2.npy']
+cls_1 = ['mediapipe/dataset_new/bhpull_left_1.npy']
+cls_2 = ['mediapipe/dataset_new/bhpush_left_1.npy', 'mediapipe/dataset_new/bhpush_left_2.npy']
+cls_3 = ['mediapipe/dataset_new/bht_left_1.npy', 'mediapipe/dataset_new/bht_left_2.npy']
+cls_4 = ['mediapipe/dataset_new/fhc_left_1.npy']
+cls_5 = ['mediapipe/dataset_new/fhpull_left_1.npy']
+cls_6 = ['mediapipe/dataset_new/fhpull_left_2.npy']
+cls_7 = ['mediapipe/dataset_new/fhs_left_1.npy', 'mediapipe/dataset_new/fhs_left_2.npy']
+
 '''
 data_path = r'/home/chenzy/FastInst-main/output/data_test_1_10f.txt'
 f_0 = open(data_path,"r")
@@ -189,7 +198,8 @@ for i in range(3):
 # print(train_data_list)
 
 '''
-for i_0 in range(len(cls_0)):
+
+'''for i_0 in range(len(cls_0)):
     cls_0_txt_path = f'/home/chenzy/FastInst-main/output/video_output/{cls_0[i_0]}_R_paddle.txt'
     f_0 = open(cls_0_txt_path,"r")
     data_0 = f_0.read()
@@ -260,7 +270,199 @@ for i_2 in range(len(cls_2)):
     # print(len(np_train_data_temp))
     
     for k in range(len(np_train_data_temp)):
+        train_data_list.append([np_train_data_temp[k], 2])'''
+
+for i_0 in range(len(cls_0)):
+    # cls_2_txt_path = f'/home/chenzy/FastInst-main/output/video_output/{cls_2[i_1]}_R_paddle.txt'
+    # f_2 = open(cls_2_txt_path,"r")
+    # data_2 = f_2.read()
+    # data_2_paddle_list = data_2.split(',')
+    # f_2.close()
+    npy_pose = np.load(f'/home/chenzy/FastInst-main/{cls_0[i_0]}')
+    print(len(npy_pose))
+
+    result = []
+    times = len(npy_pose) -(len(npy_pose)%10)
+    for j in range(times):
+        temp = npy_pose[j].ravel().tolist()
+        # temp = [] # pose only
+        # temp.append(float(data_0_paddle_list[j]))
+        result.append(temp)
+
+    np_train_data_temp = np.array(result).reshape(-1, 10, 99)
+    # np_train_data_temp = np.array(result).reshape(-1, 10, 1)
+    print(len(np_train_data_temp))
+    
+    for k in range(len(np_train_data_temp)):
+        train_data_list.append([np_train_data_temp[k], 0])
+
+for i_1 in range(len(cls_1)):
+    # cls_2_txt_path = f'/home/chenzy/FastInst-main/output/video_output/{cls_2[i_1]}_R_paddle.txt'
+    # f_2 = open(cls_2_txt_path,"r")
+    # data_2 = f_2.read()
+    # data_2_paddle_list = data_2.split(',')
+    # f_2.close()
+    npy_pose = np.load(f'/home/chenzy/FastInst-main/{cls_1[i_1]}')
+    # print(len(npy_pose))
+
+    result = []
+    times = len(npy_pose) -(len(npy_pose)%10)
+    for j in range(times):
+        temp = npy_pose[j].ravel().tolist()
+        # temp = [] # area only
+        # temp.append(float(data_0_paddle_list[j]))
+        result.append(temp)
+
+    np_train_data_temp = np.array(result).reshape(-1, 10, 99)
+    # np_train_data_temp = np.array(result).reshape(-1, 10, 1)
+    # print(len(np_train_data_temp))
+    
+    for k in range(len(np_train_data_temp)):
+        train_data_list.append([np_train_data_temp[k], 1])
+
+for i_2 in range(len(cls_2)):
+    # cls_2_txt_path = f'/home/chenzy/FastInst-main/output/video_output/{cls_2[i_1]}_R_paddle.txt'
+    # f_2 = open(cls_2_txt_path,"r")
+    # data_2 = f_2.read()
+    # data_2_paddle_list = data_2.split(',')
+    # f_2.close()
+    npy_pose = np.load(f'/home/chenzy/FastInst-main/{cls_2[i_2]}',allow_pickle=True)
+    # print(len(npy_pose))
+
+    result = []
+    times = len(npy_pose) -(len(npy_pose)%10)
+    for j in range(times):
+        temp = npy_pose[j].ravel().tolist()
+        # temp = [] # area only
+        # temp.append(float(data_0_paddle_list[j]))
+        result.append(temp)
+
+    np_train_data_temp = np.array(result).reshape(-1, 10, 99)
+    # np_train_data_temp = np.array(result).reshape(-1, 10, 1)
+    # print(len(np_train_data_temp))
+    
+    for k in range(len(np_train_data_temp)):
         train_data_list.append([np_train_data_temp[k], 2])
+
+for i_3 in range(len(cls_3)):
+    # cls_2_txt_path = f'/home/chenzy/FastInst-main/output/video_output/{cls_2[i_1]}_R_paddle.txt'
+    # f_2 = open(cls_2_txt_path,"r")
+    # data_2 = f_2.read()
+    # data_2_paddle_list = data_2.split(',')
+    # f_2.close()
+    npy_pose = np.load(f'/home/chenzy/FastInst-main/{cls_3[i_3]}')
+    # print(len(npy_pose))
+
+    result = []
+    times = len(npy_pose) -(len(npy_pose)%10)
+    for j in range(times):
+        temp = npy_pose[j].ravel().tolist()
+        # temp = [] # area only
+        # temp.append(float(data_0_paddle_list[j]))
+        result.append(temp)
+
+    np_train_data_temp = np.array(result).reshape(-1, 10, 99)
+    # np_train_data_temp = np.array(result).reshape(-1, 10, 1)
+    # print(len(np_train_data_temp))
+    
+    for k in range(len(np_train_data_temp)):
+        train_data_list.append([np_train_data_temp[k], 3])
+
+for i_4 in range(len(cls_4)):
+    # cls_2_txt_path = f'/home/chenzy/FastInst-main/output/video_output/{cls_2[i_1]}_R_paddle.txt'
+    # f_2 = open(cls_2_txt_path,"r")
+    # data_2 = f_2.read()
+    # data_2_paddle_list = data_2.split(',')
+    # f_2.close()
+    npy_pose = np.load(f'/home/chenzy/FastInst-main/{cls_4[i_4]}')
+    # print(len(npy_pose))
+
+    result = []
+    times = len(npy_pose) -(len(npy_pose)%10)
+    for j in range(times):
+        temp = npy_pose[j].ravel().tolist()
+        # temp = [] # area only
+        # temp.append(float(data_0_paddle_list[j]))
+        result.append(temp)
+
+    np_train_data_temp = np.array(result).reshape(-1, 10, 99)
+    # np_train_data_temp = np.array(result).reshape(-1, 10, 1)
+    # print(len(np_train_data_temp))
+    
+    for k in range(len(np_train_data_temp)):
+        train_data_list.append([np_train_data_temp[k], 4])
+
+for i_5 in range(len(cls_5)):
+    # cls_2_txt_path = f'/home/chenzy/FastInst-main/output/video_output/{cls_2[i_1]}_R_paddle.txt'
+    # f_2 = open(cls_2_txt_path,"r")
+    # data_2 = f_2.read()
+    # data_2_paddle_list = data_2.split(',')
+    # f_2.close()
+    npy_pose = np.load(f'/home/chenzy/FastInst-main/{cls_5[i_5]}')
+    # print(len(npy_pose))
+
+    result = []
+    times = len(npy_pose) -(len(npy_pose)%10)
+    for j in range(times):
+        temp = npy_pose[j].ravel().tolist()
+        # temp = [] # area only
+        # temp.append(float(data_0_paddle_list[j]))
+        result.append(temp)
+
+    np_train_data_temp = np.array(result).reshape(-1, 10, 99)
+    # np_train_data_temp = np.array(result).reshape(-1, 10, 1)
+    # print(len(np_train_data_temp))
+    
+    for k in range(len(np_train_data_temp)):
+        train_data_list.append([np_train_data_temp[k], 5])
+
+for i_6 in range(len(cls_6)):
+    # cls_2_txt_path = f'/home/chenzy/FastInst-main/output/video_output/{cls_2[i_1]}_R_paddle.txt'
+    # f_2 = open(cls_2_txt_path,"r")
+    # data_2 = f_2.read()
+    # data_2_paddle_list = data_2.split(',')
+    # f_2.close()
+    npy_pose = np.load(f'/home/chenzy/FastInst-main/{cls_6[i_6]}')
+    # print(len(npy_pose))
+
+    result = []
+    times = len(npy_pose) -(len(npy_pose)%10)
+    for j in range(times):
+        temp = npy_pose[j].ravel().tolist()
+        # temp = [] # area only
+        # temp.append(float(data_0_paddle_list[j]))
+        result.append(temp)
+
+    np_train_data_temp = np.array(result).reshape(-1, 10, 99)
+    # np_train_data_temp = np.array(result).reshape(-1, 10, 1)
+    # print(len(np_train_data_temp))
+    
+    for k in range(len(np_train_data_temp)):
+        train_data_list.append([np_train_data_temp[k], 6])
+
+for i_7 in range(len(cls_7)):
+    # cls_2_txt_path = f'/home/chenzy/FastInst-main/output/video_output/{cls_2[i_1]}_R_paddle.txt'
+    # f_2 = open(cls_2_txt_path,"r")
+    # data_2 = f_2.read()
+    # data_2_paddle_list = data_2.split(',')
+    # f_2.close()
+    npy_pose = np.load(f'/home/chenzy/FastInst-main/{cls_7[i_7]}')
+    # print(len(npy_pose))
+
+    result = []
+    times = len(npy_pose) -(len(npy_pose)%10)
+    for j in range(times):
+        temp = npy_pose[j].ravel().tolist()
+        # temp = [] # area only
+        # temp.append(float(data_0_paddle_list[j]))
+        result.append(temp)
+
+    np_train_data_temp = np.array(result).reshape(-1, 10, 99)
+    # np_train_data_temp = np.array(result).reshape(-1, 10, 1)
+    # print(len(np_train_data_temp))
+    
+    for k in range(len(np_train_data_temp)):
+        train_data_list.append([np_train_data_temp[k], 7])
 
 '''
 for i_3 in range(len(cls_3)):
@@ -293,12 +495,13 @@ for i_3 in range(len(cls_3)):
 # print(len(train_data_list))
 # exit()
 dataset = train_data_list
+# print(dataset)
 train_size = int(0.75 * len(dataset))
 val_size = len(dataset) - train_size
 train_dataset, val_dataset = random_split(dataset, [train_size, val_size])
 print('------')
 print(train_dataset[0][0].shape)
-print(train_dataset[0])
+# print(train_dataset[0])
 
 train_size2 = int(0.85 * len(train_dataset))
 test_size = len(train_dataset) - train_size2
@@ -322,11 +525,11 @@ valSteps = len(val_dataset) // BATCH_SIZE
 
 # initialize the Conv3DNet model
 print("[INFO] initializing the Conv1DNet model...")
-num_classes = 3
-labels = [0,1,2]
+num_classes = 8
+labels = [0, 1, 2, 3, 4, 5, 6, 7]
 # model = BiLSTM(10,64,100,num_classes)
 model = Conv1DNet(num_classes)
-print(model)
+# print(model)
 
 
 # initialize our optimizer and loss function
@@ -461,7 +664,7 @@ plt.legend(loc="lower left")
 # serialize the model to disk
 # torch.save(model, args["model"])
 
-torch.save(model.state_dict(), "./classify_model/model.pth")
+torch.save(model.state_dict(), "./classify_model/model_0611_poseonly_8cls.pth")
 
 from sklearn.metrics import classification_report
 # we can now evaluate the network on the test set
