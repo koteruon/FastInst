@@ -7,7 +7,7 @@ labelme_folder = r"/home/chenzy/FastInst-main/datasets/new_table_tennis"
 export_dir = r"/home/chenzy/FastInst-main/datasets/new_table_tennis/ana"
 
 # set train split rate
-train_split_rate = 0.85
+train_split_rate = 0.80
 
 # set category ID start value
 category_id_start = 0
