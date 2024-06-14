@@ -597,7 +597,8 @@ if __name__ == "__main__":
                 # paddle_R_area_list.append(paddle_R_area)
 
                 # Set the desired plot size
-                plot_width = 1200             # 720       1920      1200
+                # plot_width = 1200             # 720       1920      1200
+                plot_width = 880
                 plot_height = 420
                 plot_x = 720                  # 1200      0         720
                 plot_y = 0
