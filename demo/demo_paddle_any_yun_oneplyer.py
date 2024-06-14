@@ -77,6 +77,9 @@ def get_parser():
         "or a single glob pattern such as 'directory/*.jpg'",
     )
     parser.add_argument(
+        "--csv_name",
+    )
+    parser.add_argument(
         "--output",
         help="A file or directory to save output visualizations. "
         "If not given, will show output in an OpenCV window.",
@@ -445,7 +448,7 @@ if __name__ == "__main__":
             # print("test")
             # print(len(bb_boxs_person))
             if len(bb_boxs_person) >= 1 :
-                print("!!!!!!!!!!!!!!!!")
+                # print("!!!!!!!!!!!!!!!!")
                 # print('bb_boxs_person', bb_boxs_person)
                 min_box_x = bb_boxs_person[0][0]
                 # print("test")
@@ -468,7 +471,7 @@ if __name__ == "__main__":
                         # print('max_height: ', max_height)                   # find the max_height (bottom) of merge_img
             # print('min_box_x: ', min_box_x, 'mix_box_y: ', min_box_y, 'max_width: ', max_width, 'max_height: ', max_height)
             else: 
-                print("??????????")
+                # print("??????????")
                 min_box_x, min_box_y = 0, 0
                 max_width, max_height = 1080, 1920
             left = min_box_x
@@ -697,8 +700,8 @@ if __name__ == "__main__":
                     color_2 = (0, max((color_component_2-30)/255, 0), color_component_2/255)            # yellow to black gradient
                     # color_2 = (0, 0, color_component_2/255)                                           # red to black gradient
                     color_normalized = color_2[:3]
-                    print(color_2)
-                    print(color_normalized)
+                    # print(color_2)
+                    # print(color_normalized)
                     for i in range(len(color_normalized)):
                         if color_normalized[i]>=1:
                             color_normalized[i] ==1
@@ -745,8 +748,8 @@ if __name__ == "__main__":
                 # print(paddle_R_area_list)
 
                 path_csv_str = str(args.output)
-                csv_name = str(args.video_input)
-                path_R = path_csv_str +"/"  +"_L_paddle.txt"
+                csv_name_str = str(args.csv_name).strip()
+                path_R = path_csv_str + "/" +  csv_name_str +"_L_paddle.txt"
                 # path_L = path_csv_str +"/"  + "_L_paddle.txt"
 
                 with open(path_R, 'w', newline='') as csvfile_1:
