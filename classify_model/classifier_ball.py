@@ -70,11 +70,12 @@ class Conv1DNet(nn.Module):
       
         # self.fc1 = nn.Linear(6400, 64)  # Adjust the input size based on the output shape of the last conv layer
         # self.fc1 = nn.Linear(1280, 64)  # Adjust the input size based on the output shape of the last conv layer
-        self.fc1 = nn.Linear(6400, 64)  # Adjust the input size based on the output shape of the last conv layer
+        # self.fc1 = nn.Linear(768, 64)  # Adjust the input size based on the output shape of the last conv layer
         # self.fc1 = nn.Linear(6144, 64)
         # self.fc1 = nn.Linear(256 * 3, 64)
         # self.fc1 = nn.Linear(2, 64)
         # self.fc1 = nn.Linear(1024, 64)
+        self.fc1 = nn.Linear(768, 64)
         self.relu4 = nn.ReLU()
         self.fc2 = nn.Linear(64, num_classes)
 
@@ -323,7 +324,7 @@ def genarate_area_data(train_data_list):
     cls_7_txt = ['fhs_left_1_L_paddle.txt']
 
     for i_0 in range(len(cls_0_txt)):
-        cls_0_txt_path = f'/home/chenzy/FastInst-main/output/new_record/right_handed/{cls_0_txt[i_0]}'
+        cls_0_txt_path = f'/home/chenzy/FastInst-main/output/new_record/right_handed/new_weight/{cls_0_txt[i_0]}'
         # /home/chenzy/FastInst-main/output/new_record/right_handed/bhc_left_1_L_paddle.txt
         f_0 = open(cls_0_txt_path,"r")
         data_0 = f_0.read()
@@ -341,7 +342,7 @@ def genarate_area_data(train_data_list):
             train_data_list.append([np_train_data_temp[k], 0])
 
     for i_1 in range(len(cls_1_txt)):
-        cls_1_txt_path = f'/home/chenzy/FastInst-main/output/new_record/right_handed/{cls_1_txt[i_1]}'
+        cls_1_txt_path = f'/home/chenzy/FastInst-main/output/new_record/right_handed/new_weight/{cls_1_txt[i_1]}'
         # /home/chenzy/FastInst-main/output/new_record/right_handed/bhc_left_1_L_paddle.txt
         f_1 = open(cls_1_txt_path,"r")
         data_1 = f_1.read()
@@ -359,7 +360,7 @@ def genarate_area_data(train_data_list):
             train_data_list.append([np_train_data_temp[k], 1])
 
     for i_2 in range(len(cls_2_txt)):
-        cls_2_txt_path = f'/home/chenzy/FastInst-main/output/new_record/right_handed/{cls_2_txt[i_2]}'
+        cls_2_txt_path = f'/home/chenzy/FastInst-main/output/new_record/right_handed/new_weight/{cls_2_txt[i_2]}'
         # /home/chenzy/FastInst-main/output/new_record/right_handed/bhc_left_1_L_paddle.txt
         f_2 = open(cls_2_txt_path,"r")
         data_2 = f_2.read()
@@ -377,7 +378,7 @@ def genarate_area_data(train_data_list):
             train_data_list.append([np_train_data_temp[k], 2])
     
     for i_3 in range(len(cls_3_txt)):
-        cls_3_txt_path = f'/home/chenzy/FastInst-main/output/new_record/right_handed/{cls_3_txt[i_3]}'
+        cls_3_txt_path = f'/home/chenzy/FastInst-main/output/new_record/right_handed/new_weight/{cls_3_txt[i_3]}'
         # /home/chenzy/FastInst-main/output/new_record/right_handed/bhc_left_1_L_paddle.txt
         f_3 = open(cls_3_txt_path,"r")
         data_3 = f_3.read()
@@ -395,7 +396,7 @@ def genarate_area_data(train_data_list):
             train_data_list.append([np_train_data_temp[k], 3])
 
     for i_4 in range(len(cls_4_txt)):
-        cls_4_txt_path = f'/home/chenzy/FastInst-main/output/new_record/right_handed/{cls_4_txt[i_4]}'
+        cls_4_txt_path = f'/home/chenzy/FastInst-main/output/new_record/right_handed/new_weight/{cls_4_txt[i_4]}'
         # /home/chenzy/FastInst-main/output/new_record/right_handed/bhc_left_1_L_paddle.txt
         f_4 = open(cls_4_txt_path,"r")
         data_4 = f_4.read()
@@ -413,7 +414,7 @@ def genarate_area_data(train_data_list):
             train_data_list.append([np_train_data_temp[k], 4])
     
     for i_5 in range(len(cls_5_txt)):
-        cls_5_txt_path = f'/home/chenzy/FastInst-main/output/new_record/right_handed/{cls_5_txt[i_5]}'
+        cls_5_txt_path = f'/home/chenzy/FastInst-main/output/new_record/right_handed/new_weight/{cls_5_txt[i_5]}'
         # /home/chenzy/FastInst-main/output/new_record/right_handed/bhc_left_1_L_paddle.txt
         f_5 = open(cls_5_txt_path,"r")
         data_5 = f_5.read()
@@ -431,7 +432,7 @@ def genarate_area_data(train_data_list):
             train_data_list.append([np_train_data_temp[k], 5])
     
     for i_6 in range(len(cls_6_txt)):
-        cls_6_txt_path = f'/home/chenzy/FastInst-main/output/new_record/right_handed/{cls_6_txt[i_6]}'
+        cls_6_txt_path = f'/home/chenzy/FastInst-main/output/new_record/right_handed/new_weight/{cls_6_txt[i_6]}'
         # /home/chenzy/FastInst-main/output/new_record/right_handed/bhc_left_1_L_paddle.txt
         f_6 = open(cls_6_txt_path,"r")
         data_6 = f_6.read()
@@ -449,7 +450,7 @@ def genarate_area_data(train_data_list):
             train_data_list.append([np_train_data_temp[k], 6])
     
     for i_7 in range(len(cls_7_txt)):
-        cls_7_txt_path = f'/home/chenzy/FastInst-main/output/new_record/right_handed/{cls_7_txt[i_7]}'
+        cls_7_txt_path = f'/home/chenzy/FastInst-main/output/new_record/right_handed/new_weight/{cls_7_txt[i_7]}'
         # /home/chenzy/FastInst-main/output/new_record/right_handed/bhc_left_1_L_paddle.txt
         f_7 = open(cls_7_txt_path,"r")
         data_7 = f_7.read()
@@ -486,7 +487,7 @@ def generate_arms_area_data(train_data_list):
     cls_7_txt = ['fhs_left_1_L_paddle.txt']
 
     for i_0 in range(len(cls_0)):
-        cls_0_txt_path = f'/home/chenzy/FastInst-main/output/new_record/right_handed/{cls_0_txt[i_0]}'
+        cls_0_txt_path = f'/home/chenzy/FastInst-main/output/new_record/right_handed/new_weight/{cls_0_txt[i_0]}'
         # /home/chenzy/FastInst-main/output/new_record/right_handed/bhc_left_1_L_paddle.txt
         f_0 = open(cls_0_txt_path,"r")
         data_0 = f_0.read()
@@ -501,13 +502,13 @@ def generate_arms_area_data(train_data_list):
             temp = npy_pose[j].ravel().tolist()
             temp.append(float(data_0_paddle_list[j]))
             result.append(temp)
-        np_train_data_temp = np.array(result).reshape(-1, 10, 19)
+        np_train_data_temp = np.array(result).reshape(-1, 10, 16)
         # print(len(result[0]))
         for k in range(len(np_train_data_temp)):
             train_data_list.append([np_train_data_temp[k], 0])
         # exit()
     for i_1 in range(len(cls_1)):
-        cls_1_txt_path = f'/home/chenzy/FastInst-main/output/new_record/right_handed/{cls_1_txt[i_1]}'
+        cls_1_txt_path = f'/home/chenzy/FastInst-main/output/new_record/right_handed/new_weight/{cls_1_txt[i_1]}'
         # /home/chenzy/FastInst-main/output/new_record/right_handed/bhc_left_1_L_paddle.txt
         f_1 = open(cls_1_txt_path,"r")
         data_1 = f_1.read()
@@ -522,13 +523,13 @@ def generate_arms_area_data(train_data_list):
             temp = npy_pose[j].ravel().tolist()
             temp.append(float(data_1_paddle_list[j]))
             result.append(temp)
-        np_train_data_temp = np.array(result).reshape(-1, 10, 19)
+        np_train_data_temp = np.array(result).reshape(-1, 10, 16)
 
         for k in range(len(np_train_data_temp)):
             train_data_list.append([np_train_data_temp[k], 1])
     
     for i_2 in range(len(cls_2)):
-        cls_2_txt_path = f'/home/chenzy/FastInst-main/output/new_record/right_handed/{cls_2_txt[i_2]}'
+        cls_2_txt_path = f'/home/chenzy/FastInst-main/output/new_record/right_handed/new_weight/{cls_2_txt[i_2]}'
         # /home/chenzy/FastInst-main/output/new_record/right_handed/bhc_left_2_L_paddle.txt
         f_2 = open(cls_2_txt_path,"r")
         data_2 = f_2.read()
@@ -543,13 +544,13 @@ def generate_arms_area_data(train_data_list):
             temp = npy_pose[j].ravel().tolist()
             temp.append(float(data_2_paddle_list[j]))
             result.append(temp)
-        np_train_data_temp = np.array(result).reshape(-1, 10, 19)
+        np_train_data_temp = np.array(result).reshape(-1, 10, 16)
 
         for k in range(len(np_train_data_temp)):
             train_data_list.append([np_train_data_temp[k], 2])
     
     for i_3 in range(len(cls_3)):
-        cls_3_txt_path = f'/home/chenzy/FastInst-main/output/new_record/right_handed/{cls_3_txt[i_3]}'
+        cls_3_txt_path = f'/home/chenzy/FastInst-main/output/new_record/right_handed/new_weight/{cls_3_txt[i_3]}'
         # /home/chenzy/FastInst-main/output/new_record/right_handed/bhc_left_3_L_paddle.txt
         f_3 = open(cls_3_txt_path,"r")
         data_3 = f_3.read()
@@ -564,13 +565,13 @@ def generate_arms_area_data(train_data_list):
             temp = npy_pose[j].ravel().tolist()
             temp.append(float(data_3_paddle_list[j]))
             result.append(temp)
-        np_train_data_temp = np.array(result).reshape(-1, 10, 19)
+        np_train_data_temp = np.array(result).reshape(-1, 10, 16)
 
         for k in range(len(np_train_data_temp)):
             train_data_list.append([np_train_data_temp[k], 3])
 
     for i_4 in range(len(cls_4)):
-        cls_4_txt_path = f'/home/chenzy/FastInst-main/output/new_record/right_handed/{cls_4_txt[i_4]}'
+        cls_4_txt_path = f'/home/chenzy/FastInst-main/output/new_record/right_handed/new_weight/{cls_4_txt[i_4]}'
         # /home/chenzy/FastInst-main/output/new_record/right_handed/bhc_left_4_L_paddle.txt
         f_4 = open(cls_4_txt_path,"r")
         data_4 = f_4.read()
@@ -585,13 +586,13 @@ def generate_arms_area_data(train_data_list):
             temp = npy_pose[j].ravel().tolist()
             temp.append(float(data_4_paddle_list[j]))
             result.append(temp)
-        np_train_data_temp = np.array(result).reshape(-1, 10, 19)
+        np_train_data_temp = np.array(result).reshape(-1, 10, 16)
 
         for k in range(len(np_train_data_temp)):
             train_data_list.append([np_train_data_temp[k], 4])
 
     for i_5 in range(len(cls_5)):
-        cls_5_txt_path = f'/home/chenzy/FastInst-main/output/new_record/right_handed/{cls_5_txt[i_5]}'
+        cls_5_txt_path = f'/home/chenzy/FastInst-main/output/new_record/right_handed/new_weight/{cls_5_txt[i_5]}'
         # /home/chenzy/FastInst-main/output/new_record/right_handed/bhc_left_5_L_paddle.txt
         f_5 = open(cls_5_txt_path,"r")
         data_5 = f_5.read()
@@ -606,13 +607,13 @@ def generate_arms_area_data(train_data_list):
             temp = npy_pose[j].ravel().tolist()
             temp.append(float(data_5_paddle_list[j]))
             result.append(temp)
-        np_train_data_temp = np.array(result).reshape(-1, 10, 19)
+        np_train_data_temp = np.array(result).reshape(-1, 10, 16)
 
         for k in range(len(np_train_data_temp)):
             train_data_list.append([np_train_data_temp[k], 5])
     
     for i_6 in range(len(cls_6)):
-        cls_6_txt_path = f'/home/chenzy/FastInst-main/output/new_record/right_handed/{cls_6_txt[i_6]}'
+        cls_6_txt_path = f'/home/chenzy/FastInst-main/output/new_record/right_handed/new_weight/{cls_6_txt[i_6]}'
         # /home/chenzy/FastInst-main/output/new_record/right_handed/bhc_left_6_L_paddle.txt
         f_6 = open(cls_6_txt_path,"r")
         data_6 = f_6.read()
@@ -627,13 +628,13 @@ def generate_arms_area_data(train_data_list):
             temp = npy_pose[j].ravel().tolist()
             temp.append(float(data_6_paddle_list[j]))
             result.append(temp)
-        np_train_data_temp = np.array(result).reshape(-1, 10, 19)
+        np_train_data_temp = np.array(result).reshape(-1, 10, 16)
 
         for k in range(len(np_train_data_temp)):
             train_data_list.append([np_train_data_temp[k], 6])
 
     for i_7 in range(len(cls_7)):
-        cls_7_txt_path = f'/home/chenzy/FastInst-main/output/new_record/right_handed/{cls_7_txt[i_7]}'
+        cls_7_txt_path = f'/home/chenzy/FastInst-main/output/new_record/right_handed/new_weight/{cls_7_txt[i_7]}'
         # /home/chenzy/FastInst-main/output/new_record/right_handed/bhc_left_7_L_paddle.txt
         f_7 = open(cls_7_txt_path,"r")
         data_7 = f_7.read()
@@ -648,7 +649,7 @@ def generate_arms_area_data(train_data_list):
             temp = npy_pose[j].ravel().tolist()
             temp.append(float(data_7_paddle_list[j]))
             result.append(temp)
-        np_train_data_temp = np.array(result).reshape(-1, 10, 19)
+        np_train_data_temp = np.array(result).reshape(-1, 10, 16)
 
         for k in range(len(np_train_data_temp)):
             train_data_list.append([np_train_data_temp[k], 7])
@@ -672,7 +673,7 @@ def generate_arms_data(train_data_list):
         for j in range(times):
             temp = npy_pose[j].ravel().tolist()
             result.append(temp)
-        np_train_data_temp = np.array(result).reshape(-1, 10, 18)
+        np_train_data_temp = np.array(result).reshape(-1, 10, 15)
         # print(len(result[0]))
         for k in range(len(np_train_data_temp)):
             train_data_list.append([np_train_data_temp[k], 0])
@@ -685,7 +686,7 @@ def generate_arms_data(train_data_list):
         for j in range(times):
             temp = npy_pose[j].ravel().tolist()
             result.append(temp)
-        np_train_data_temp = np.array(result).reshape(-1, 10, 18)
+        np_train_data_temp = np.array(result).reshape(-1, 10, 15)
 
         for k in range(len(np_train_data_temp)):
             train_data_list.append([np_train_data_temp[k], 1])
@@ -698,7 +699,7 @@ def generate_arms_data(train_data_list):
         for j in range(times):
             temp = npy_pose[j].ravel().tolist()
             result.append(temp)
-        np_train_data_temp = np.array(result).reshape(-1, 10, 18)
+        np_train_data_temp = np.array(result).reshape(-1, 10, 15)
 
         for k in range(len(np_train_data_temp)):
             train_data_list.append([np_train_data_temp[k], 2])
@@ -711,7 +712,7 @@ def generate_arms_data(train_data_list):
         for j in range(times):
             temp = npy_pose[j].ravel().tolist()
             result.append(temp)
-        np_train_data_temp = np.array(result).reshape(-1, 10, 18)
+        np_train_data_temp = np.array(result).reshape(-1, 10, 15)
 
         for k in range(len(np_train_data_temp)):
             train_data_list.append([np_train_data_temp[k], 3])
@@ -724,7 +725,7 @@ def generate_arms_data(train_data_list):
         for j in range(times):
             temp = npy_pose[j].ravel().tolist()
             result.append(temp)
-        np_train_data_temp = np.array(result).reshape(-1, 10, 18)
+        np_train_data_temp = np.array(result).reshape(-1, 10, 15)
 
         for k in range(len(np_train_data_temp)):
             train_data_list.append([np_train_data_temp[k], 4])
@@ -736,7 +737,121 @@ def generate_arms_data(train_data_list):
         for j in range(times):
             temp = npy_pose[j].ravel().tolist()
             result.append(temp)
-        np_train_data_temp = np.array(result).reshape(-1, 10, 18)
+        np_train_data_temp = np.array(result).reshape(-1, 10, 15)
+
+        for k in range(len(np_train_data_temp)):
+            train_data_list.append([np_train_data_temp[k], 5])
+    
+    for i_6 in range(len(cls_6)):
+        npy_pose = np.load(f'/home/chenzy/FastInst-main/{cls_6[i_6]}') # pose 
+        result = []
+        times = len(npy_pose) -(len(npy_pose)%10) # pose 
+        # times = len(data_6_paddle_list) -(len(data_6_paddle_list)%66)
+        for j in range(times):
+            temp = npy_pose[j].ravel().tolist()
+            result.append(temp)
+        np_train_data_temp = np.array(result).reshape(-1, 10, 15)
+
+        for k in range(len(np_train_data_temp)):
+            train_data_list.append([np_train_data_temp[k], 6])
+
+    for i_7 in range(len(cls_7)):
+        npy_pose = np.load(f'/home/chenzy/FastInst-main/{cls_7[i_7]}') # pose 
+        result = []
+        times = len(npy_pose) -(len(npy_pose)%10) # pose 
+        # times = len(data_7_paddle_list) -(len(data_7_paddle_list)%77)
+        for j in range(times):
+            temp = npy_pose[j].ravel().tolist()
+            result.append(temp)
+        np_train_data_temp = np.array(result).reshape(-1, 10, 15)
+
+        for k in range(len(np_train_data_temp)):
+            train_data_list.append([np_train_data_temp[k], 7])
+
+def generate_palm_data(train_data_list):
+    cls_0 = ['mediapipe/new_record/left/right_handed/palm/bhc_left_1_crop.npy']
+    cls_1 = ['mediapipe/new_record/left/right_handed/palm/bhpull_left_1.npy']
+    cls_2 = ['mediapipe/new_record/left/right_handed/palm/bhpush_left_1.npy']
+    cls_3 = ['mediapipe/new_record/left/right_handed/palm/bht_left_1.npy']
+    cls_4 = ['mediapipe/new_record/left/right_handed/palm/fhc_left_1.npy']
+    cls_5 = ['mediapipe/new_record/left/right_handed/palm/fhpull_left_1.npy']
+    cls_6 = ['mediapipe/new_record/left/right_handed/palm/fhpush_left_1.npy']
+    cls_7 = ['mediapipe/new_record/left/right_handed/palm/fhs_left_1.npy']
+
+    for i_0 in range(len(cls_0)):
+        
+        npy_pose = np.load(f'/home/chenzy/FastInst-main/{cls_0[i_0]}') # pose 
+        result = []
+        times = len(npy_pose) -(len(npy_pose)%10) # pose 
+        # times = len(data_0_paddle_list) -(len(data_0_paddle_list)%10)
+        for j in range(times):
+            temp = npy_pose[j].ravel().tolist()
+            result.append(temp)
+        np_train_data_temp = np.array(result).reshape(-1, 10, 9)
+        # print(len(result[0]))
+        for k in range(len(np_train_data_temp)):
+            train_data_list.append([np_train_data_temp[k], 0])
+
+    for i_1 in range(len(cls_1)):
+        npy_pose = np.load(f'/home/chenzy/FastInst-main/{cls_1[i_1]}') # pose 
+        result = []
+        times = len(npy_pose) -(len(npy_pose)%10) # pose 
+        # times = len(data_1_paddle_list) -(len(data_1_paddle_list)%11)
+        for j in range(times):
+            temp = npy_pose[j].ravel().tolist()
+            result.append(temp)
+        np_train_data_temp = np.array(result).reshape(-1, 10, 9)
+
+        for k in range(len(np_train_data_temp)):
+            train_data_list.append([np_train_data_temp[k], 1])
+    
+    for i_2 in range(len(cls_2)):
+        npy_pose = np.load(f'/home/chenzy/FastInst-main/{cls_2[i_2]}') # pose 
+        result = []
+        times = len(npy_pose) -(len(npy_pose)%10) # pose 
+        # times = len(data_2_paddle_list) -(len(data_2_paddle_list)%22)
+        for j in range(times):
+            temp = npy_pose[j].ravel().tolist()
+            result.append(temp)
+        np_train_data_temp = np.array(result).reshape(-1, 10, 9)
+
+        for k in range(len(np_train_data_temp)):
+            train_data_list.append([np_train_data_temp[k], 2])
+    
+    for i_3 in range(len(cls_3)):
+        npy_pose = np.load(f'/home/chenzy/FastInst-main/{cls_3[i_3]}') # pose 
+        result = []
+        times = len(npy_pose) -(len(npy_pose)%10) # pose 
+        # times = len(data_3_paddle_list) -(len(data_3_paddle_list)%33)
+        for j in range(times):
+            temp = npy_pose[j].ravel().tolist()
+            result.append(temp)
+        np_train_data_temp = np.array(result).reshape(-1, 10, 9)
+
+        for k in range(len(np_train_data_temp)):
+            train_data_list.append([np_train_data_temp[k], 3])
+
+    for i_4 in range(len(cls_4)):
+        npy_pose = np.load(f'/home/chenzy/FastInst-main/{cls_4[i_4]}') # pose 
+        result = []
+        times = len(npy_pose) -(len(npy_pose)%10) # pose 
+        # times = len(data_4_paddle_list) -(len(data_4_paddle_list)%44)
+        for j in range(times):
+            temp = npy_pose[j].ravel().tolist()
+            result.append(temp)
+        np_train_data_temp = np.array(result).reshape(-1, 10, 9)
+
+        for k in range(len(np_train_data_temp)):
+            train_data_list.append([np_train_data_temp[k], 4])
+
+    for i_5 in range(len(cls_5)):
+        npy_pose = np.load(f'/home/chenzy/FastInst-main/{cls_5[i_5]}') # pose 
+        result = []
+        times = len(npy_pose) -(len(npy_pose)%10) # pose 
+        for j in range(times):
+            temp = npy_pose[j].ravel().tolist()
+            result.append(temp)
+        np_train_data_temp = np.array(result).reshape(-1, 10, 9)
 
         for k in range(len(np_train_data_temp)):
             train_data_list.append([np_train_data_temp[k], 5])
@@ -762,10 +877,11 @@ def generate_arms_data(train_data_list):
         for j in range(times):
             temp = npy_pose[j].ravel().tolist()
             result.append(temp)
-        np_train_data_temp = np.array(result).reshape(-1, 10, 18)
+        np_train_data_temp = np.array(result).reshape(-1, 10, 9)
 
         for k in range(len(np_train_data_temp)):
             train_data_list.append([np_train_data_temp[k], 7])
+
 '''
 # cls_0 = ['mediapipe/new_record/left/right_handed/bhc_left_1.npy']
 # cls_1 = ['mediapipe/new_record/left/right_handed/bhpull_left_1.npy']
@@ -1098,14 +1214,14 @@ genarate_area_data(train_data_list)
 dataset = train_data_list
 # exit()
 # print(dataset)
-train_size = int(0.80 * len(dataset))
+train_size = int(0.70 * len(dataset))
 val_size = len(dataset) - train_size
 train_dataset, val_dataset = random_split(dataset, [train_size, val_size])
 print('------')
 print(train_dataset[0][0].shape)
 # print(train_dataset[0])
 
-train_size2 = int(0.85 * len(train_dataset))
+train_size2 = int(0.80 * len(train_dataset))
 test_size = len(train_dataset) - train_size2
 train_dataset, test_dataset = random_split(train_dataset, [train_size2, test_size])
 
@@ -1114,7 +1230,7 @@ print(len(train_dataset), len(val_dataset), len(test_dataset))
 # define training hyperparameters
 INIT_LR = 1e-4
 BATCH_SIZE = 2
-EPOCHS = 150
+EPOCHS = 200
 
 # initialize the train, validation, and test data loaders
 # trainDataLoader = DataLoader(train_dataset, shuffle=True, batch_size=BATCH_SIZE, drop_last=True)
@@ -1266,7 +1382,7 @@ plt.legend(loc="lower left")
 # serialize the model to disk
 # torch.save(model, args["model"])
 
-torch.save(model.state_dict(), "./classify_model/model_0618_arms_8cls_2.pth")
+torch.save(model.state_dict(), "./classify_model/model_0619_area.pth")
 
 from sklearn.metrics import classification_report
 # we can now evaluate the network on the test set

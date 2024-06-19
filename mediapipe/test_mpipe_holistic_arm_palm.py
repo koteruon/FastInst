@@ -14,6 +14,7 @@ def remove_landmark_connections(custom_connections, landmark):
 def is_landmark_in_connection(connection, landmark):
     return landmark.value not in connection \
                   and not ( mp_holistic.PoseLandmark.LEFT_SHOULDER in connection and  mp_holistic.PoseLandmark.RIGHT_SHOULDER in connection)
+
 def detect_right_hand(input_video, output_path):
 # mediapipe 啟用偵測手掌
     path = input_video
@@ -41,30 +42,39 @@ def detect_right_hand(input_video, output_path):
             else:
                 img2 = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)   # 將 BGR 轉換成 RGB
                 results = holistic.process(img2)  
-                # custom_lm_styles = mp_drawing_styles.get_default_pose_landmarks_style() 
-                # custom_connections = list(mp_holistic.POSE_CONNECTIONS)
+                custom_lm_styles = mp_drawing_styles.get_default_pose_landmarks_style() 
+                custom_connections = list(mp_holistic.POSE_CONNECTIONS)
                 included_landmarks = [
                     # right hand set
                     mp_holistic.PoseLandmark.RIGHT_SHOULDER, 
                     mp_holistic.PoseLandmark.RIGHT_ELBOW, 
                     mp_holistic.PoseLandmark.RIGHT_WRIST, 
-
                     mp_holistic.PoseLandmark.RIGHT_PINKY, 
-                    mp_holistic.PoseLandmark.RIGHT_THUMB, 
+                    # mp_holistic.PoseLandmark.RIGHT_THUMB, 
                     mp_holistic.PoseLandmark.RIGHT_INDEX, 
-                    ]
-
+                    ]               
                 if results.pose_landmarks:
-                    lndmark_list.append ([ [results.pose_landmarks.landmark[i.value].x, \
-                                results.pose_landmarks.landmark[i.value].y, \
-                                results.pose_landmarks.landmark[i.value].z] for i in included_landmarks])
-                    # print(lndmark_list)
+                    
+                #     lndmark_list.append ([ [results.pose_landmarks.landmark[i.value].x, \
+                #             results.pose_landmarks.landmark[i.value].y, \
+                #             results.pose_landmarks.landmark[i.value].z] for i in mp_holistic.PoseLandmark])
+                    
+                    for landmark in custom_lm_styles:
+                        if landmark not in included_landmarks:
+                            # we change the way the excluded landmarks are drawn
+                            custom_lm_styles[landmark] = DrawingSpec(color=(255,255,0), thickness=None) 
+                            # we remove all connections which contain these landmarks
+                            custom_connections = remove_landmark_connections(custom_connections, landmark)
+
+                    mp_drawing.draw_landmarks(img, results.pose_landmarks, custom_connections,
+                                landmark_drawing_spec=mp_drawing_styles.get_default_pose_landmarks_style()
+                                ) 
                 else:
                     output_video.write(img)
-                    lndmark_list.append(np.zeros((21, 3)))
+                    # lndmark_list.append(np.zeros((3, 3)))
                 
-        np_path = output_path + ".npy"
-        np.save(np_path, lndmark_list)
+        # np_path = output_path + ".npy"
+        # np.save(np_path, lndmark_list)
         # print((lndmark_list[0]))
         cap.release()
         output_video.release()
