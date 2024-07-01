@@ -8,10 +8,10 @@ To train a Model:
 python train_net.py --config-file /home/chenzy/FastInst-main/configs/table_tennis/fastinst_S50_T5_table_tennis.yaml
 
 Test train Model:
-python train_net.py --config-file /home/chenzy/FastInst-main/configs/table_tennis/fastinst_S50_T5_table_tennis.yaml
+python train_net.py --config-file configs/table_tennis/fastinst_R101_table_tennis.yaml
 
 To inference video:
-python demo/demo.py --config-file configs/table_tennis/fastinst_S50_T5_table_tennis.yaml --video-input /home/chenzy/FastInst-main/new_record/left/bhc_left_1.mp4 --output output/video_output  --confidence-threshold 0.75
+python demo/demo.py --config-file configs/table_tennis/fastinst_R101_table_tennis.yaml --video-input /home/chenzy/FastInst-main/f-3_video_Trim5.mp4 --output output/compare_image_resnet  --confidence-threshold 0.75
 
 python demo/demo_paddle_any.py --config-file configs/table_tennis/fastinst_S50_T4_table_tennis.yaml --video-input IMG_side_20231113-141215.mov --output output/video_output  --confidence-threshold 0.75
 
@@ -19,10 +19,12 @@ python demo/demo_paddle_any_yun_oneplyer.py --config-file configs/table_tennis/f
 python demo/demo_paddle_any_yun_oneplyer.py --config-file configs/table_tennis/fastinst_S50_T5_table_tennis.yaml --csv_name fhpull_left_1_crop --video-input /home/chenzy/FastInst-main/new_record/left_player/right/fhpull_left_1_crop.mp4 --output /home/chenzy/FastInst-main/output/new_record/right_handed  --confidence-threshold 0.75 
 
 To inference Image:
-python demo/demo.py --config-file configs/table_tennis/fastinst_S50_T5_table_tennis.yaml --input datasets/table-tennis/train/data/f-3_frame0930.jpg --output output/  --confidence-threshold 0.75
+python demo/demo.py --config-file configs/table_tennis/fastinst_S50_T5_table_tennis.yaml --input /home/chenzy/FastInst-main/compare_image/*.jpg --output /home/chenzy/FastInst-main/output/compare_image_resnest_test  --confidence-threshold 0.75
 
 To inference a set of Images:
-python demo/demo.py --config-file configs/table_tennis/fastinst_R101_table_tennis.yaml --input datasets/table-tennis/train/data/*.jpg --output output/  
+python demo/demo.py --config-file configs/table_tennis/fastinst_R101_table_tennis.yaml --input compare_image/*.jpg --output output/compare_image_resnet --confidence-threshold 0.75
+
+
 
 tensorboard --logdir output/table_tennis --port 8008
 tensorboard --logdir output/coco --port 8080

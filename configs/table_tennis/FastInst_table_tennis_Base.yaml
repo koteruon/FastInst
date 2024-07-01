@@ -17,8 +17,8 @@ MODEL:
   SEM_SEG_HEAD:
     NAME: "FastInstHead"
     IGNORE_VALUE: 255
-    # NUM_CLASSES: 6
-    NUM_CLASSES: 5
+    NUM_CLASSES: 6
+    # NUM_CLASSES: 5
     CONVS_DIM: 256
     MASK_DIM: 256
     # NORM: "GN"
@@ -53,11 +53,11 @@ MODEL:
       OVERLAP_THRESHOLD: 0.8
       OBJECT_MASK_THRESHOLD: 0.8
   RETINANET:
-    # NUM_CLASSES: 6
-    NUM_CLASSES: 5
+    NUM_CLASSES: 6
+    # NUM_CLASSES: 5
   ROI_HEADS:
-    # NUM_CLASSES: 6
-    NUM_CLASSES: 5
+    NUM_CLASSES: 6
+    # NUM_CLASSES: 5
 DATASETS:
   TRAIN: ("table-tennis_train",)
   TEST:  ("table-tennis_val",)
@@ -67,7 +67,7 @@ SOLVER:
   # STEPS: (18625, 24833)
   STEPS:
   - 30000
-  MAX_ITER: 40000
+  MAX_ITER: 4000
   # MAX_ITER: 75040
   # MAX_ITER: 112560
   WARMUP_FACTOR: 1.0
