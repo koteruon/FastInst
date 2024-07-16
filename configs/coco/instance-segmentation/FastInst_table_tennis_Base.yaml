@@ -1,8 +1,8 @@
 MODEL:
   BACKBONE:
     FREEZE_AT: 0
-    NAME: "build_resnet_backbone"
-  WEIGHTS: "detectron2://ImageNetPretrained/torchvision/R-50.pkl"
+    NAME: "build_resnet_vd_backbone"
+  WEIGHTS: "model/fastinst_R50-vd-dcn_ppm-fpn_x1_576_37.4.pth"
   PIXEL_MEAN: [ 123.675, 116.280, 103.530 ]
   PIXEL_STD: [ 58.395, 57.120, 57.375 ]
   RESNETS:
@@ -34,7 +34,7 @@ MODEL:
     LOCATION_WEIGHT: 1000.0
     PROPOSAL_WEIGHT: 20.0
     HIDDEN_DIM: 256
-    NUM_OBJECT_QUERIES: 100
+    NUM_OBJECT_QUERIES: 100 #100
     NUM_AUX_QUERIES: 8
     NHEADS: 8
     DROPOUT: 0.0
@@ -62,7 +62,7 @@ SOLVER:
   IMS_PER_BATCH: 4
   BASE_LR: 0.0001
   STEPS: (3000, 3500)
-  MAX_ITER: 4000
+  MAX_ITER: 4000 #4000
   WARMUP_FACTOR: 1.0
   WARMUP_ITERS: 10
   WEIGHT_DECAY: 0.05
@@ -92,7 +92,8 @@ INPUT:
   FORMAT: "RGB"
   DATASET_MAPPER_NAME: "fastinst_instance"
 TEST:
-  EVAL_PERIOD: 2500
+  DETECTIONS_PER_IMAGE: 100
+  EVAL_PERIOD: 2000
 DATALOADER:
   FILTER_EMPTY_ANNOTATIONS: True
   NUM_WORKERS: 4
