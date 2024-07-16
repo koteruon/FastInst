@@ -1,4 +1,1 @@
-from . import (
-    register_coco_stuff_10k,
-    register_coco_panoptic_annos_semseg,
-)
+from . import register_coco_panoptic_annos_semseg, register_coco_stuff_10k, register_table_tennis_panoptic_annos_semseg

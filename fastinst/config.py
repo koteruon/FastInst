@@ -72,7 +72,7 @@ def add_fastinst_config(cfg):
     # pixel decoder
     cfg.MODEL.SEM_SEG_HEAD.PIXEL_DECODER_NAME = "FastInstEncoderV1"
 
-    
+
     # swin transformer backbone
     cfg.MODEL.SWIN = CN()
     cfg.MODEL.SWIN.PRETRAIN_IMG_SIZE = 224
@@ -117,4 +117,3 @@ def add_fastinst_config(cfg):
     # Importance sampling parameter for PointRend point sampling during training. Parametr `beta` in
     # the original paper.
     cfg.MODEL.FASTINST.IMPORTANCE_SAMPLE_RATIO = 0.75
-

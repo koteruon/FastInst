@@ -286,4 +286,4 @@ class MLP(nn.Module):
             # x = F.relu(layer(x)) if i < self.num_layers - 1 else layer(x)
             x = F.gelu(layer(x)) if i < self.num_layers - 1 else layer(x)
         return x
-    
+

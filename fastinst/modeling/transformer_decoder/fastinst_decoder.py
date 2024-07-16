@@ -10,7 +10,6 @@ from .utils import TRANSFORMER_DECODER_REGISTRY, QueryProposal, \
     CrossAttentionLayer, SelfAttentionLayer, FFNLayer, MLP
 
 
-
 @TRANSFORMER_DECODER_REGISTRY.register()
 class FastInstDecoder(nn.Module):
 
@@ -94,7 +93,6 @@ class FastInstDecoder(nn.Module):
         self.class_embed_layers = nn.ModuleList()
         self.mask_embed_layers = nn.ModuleList()
         self.mask_features_layers = nn.ModuleList()
-        
         for idx in range(self.num_layers + 1):
             self.decoder_query_norm_layers.append(nn.LayerNorm(hidden_dim))
             self.class_embed_layers.append(MLP(hidden_dim, hidden_dim, num_classes + 1, 3))

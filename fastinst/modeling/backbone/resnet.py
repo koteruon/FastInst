@@ -366,16 +366,16 @@ class ResNet(Backbone):
     """
 
     def __init__(self, block_types, layers, in_chans=3,
-                 cardinality=1, base_width=64, stem_width=64, 
+                 cardinality=1, base_width=64, stem_width=64,
                  stem_type='', replace_stem_pool=False,
-                 output_stride=32, block_reduce_first=1, 
+                 output_stride=32, block_reduce_first=1,
                  down_kernel_size=1, avg_down=False,
-                 act_layer=nn.ReLU, 
-                 norm_layer=nn.BatchNorm2d, 
+                 act_layer=nn.ReLU,
+                 norm_layer=nn.BatchNorm2d,
                  aa_layer=None, drop_rate=0.0, drop_path_rate=0.,
-                 drop_block_rate=0., global_pool='avg', 
+                 drop_block_rate=0., global_pool='avg',
                  avd = False,
-                 zero_init_last_bn=True, block_args=None, 
+                 zero_init_last_bn=True, block_args=None,
                  out_features=None):
         block_args = block_args or dict()
         assert output_stride in (8, 16, 32)

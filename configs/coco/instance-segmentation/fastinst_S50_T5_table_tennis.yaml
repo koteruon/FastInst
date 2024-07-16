@@ -1,0 +1,11 @@
+_BASE_: FastInst_table_tennis_Base.yaml
+MODEL:
+  BACKBONE:
+    NAME: "build_resnet_backbone"
+  WEIGHTS: "output/model_final.pth"
+  RESNETS:
+    DEFORM_ON_PER_STAGE: [ False, False, True, True ] # dcn on res4, res5
+INPUT:
+  MIN_SIZE_TEST: 576
+  MAX_SIZE_TEST: 777
+OUTPUT_DIR: "output/table_tennis/"

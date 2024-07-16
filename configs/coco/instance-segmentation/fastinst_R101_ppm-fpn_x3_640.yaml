@@ -1,9 +1,9 @@
 _BASE_: Fast-COCO-InstanceSegmentation.yaml
 MODEL:
-  BACKBONE:   
+  BACKBONE:
     NAME: "build_resnest_backbone"
   # WEIGHTS: "swinv2_tiny_patch4_window8_256.pkl"
-  
+
   RESNETS:
     DEPTH: 101
   FASTINST:
