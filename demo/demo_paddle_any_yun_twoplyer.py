@@ -3,40 +3,40 @@ import argparse
 import glob
 import multiprocessing as mp
 import os
+import sys
 import time
-import sys 
-sys.path.insert(1, os.path.join(sys.path[0], '..'))
-import cv2
-import tempfile
-from tqdm import tqdm
-import warnings
-import numpy as np
-import json
-from datetime import datetime
-import pandas as pd
-import matplotlib.cm as cm
-import matplotlib.patches as mpatches
-import matplotlib.lines as mlines
-import csv
 
+sys.path.insert(1, os.path.join(sys.path[0], ".."))
+import csv
+import json
+import tempfile
+import warnings
+from datetime import datetime
+
+import cv2
+import matplotlib.cm as cm
+import matplotlib.lines as mlines
+import matplotlib.patches as mpatches
+import matplotlib.pyplot as plt
+import matplotlib.ticker as ticker
+import numpy as np
+import pandas as pd
 from detectron2.config import get_cfg
 from detectron2.data.detection_utils import read_image
 from detectron2.projects.deeplab import add_deeplab_config
 from detectron2.utils.logger import setup_logger
+from predictor import VisualizationDemo
+from tqdm import tqdm
 
 # from sparseinst import VisualizationDemo, add_sparse_inst_config
 from fastinst import add_fastinst_config
-from predictor import VisualizationDemo
-
-import matplotlib.pyplot as plt
-import matplotlib.ticker as ticker
 
 # from resnest.d2 import add_resnest_config           # for ResNeSt
 # from resnest.torch import resnest50_fast_2s2x40d
 # from sparseinst import add_resnest_config
 
 # from resnet.torch import resnet
-# from fastinst import 
+# from fastinst import
 
 
 # constants
@@ -59,22 +59,19 @@ def setup_cfg(args):
 
 
 def get_parser():
-    parser = argparse.ArgumentParser(
-        description="Detectron2 demo for builtin models")
+    parser = argparse.ArgumentParser(description="Detectron2 demo for builtin models")
     parser.add_argument(
         "--config-file",
         default="configs/quick_schedules/mask_rcnn_R_50_FPN_inference_acc_test.yaml",
         metavar="FILE",
         help="path to config file",
     )
-    parser.add_argument("--webcam", action="store_true",
-                        help="Take inputs from webcam.")
+    parser.add_argument("--webcam", action="store_true", help="Take inputs from webcam.")
     parser.add_argument("--video-input", help="Path to video file.")
     parser.add_argument(
         "--input",
         nargs="+",
-        help="A list of space separated input images; "
-        "or a single glob pattern such as 'directory/*.jpg'",
+        help="A list of space separated input images; " "or a single glob pattern such as 'directory/*.jpg'",
     )
     parser.add_argument(
         "--output",
@@ -96,6 +93,7 @@ def get_parser():
     )
     return parser
 
+
 def test_opencv_video_format(codec, file_ext):
     with tempfile.TemporaryDirectory(prefix="video_format_test") as dir:
         filename = os.path.join(dir, "test_file" + file_ext)
@@ -111,6 +109,7 @@ def test_opencv_video_format(codec, file_ext):
         if os.path.isfile(filename):
             return True
         return False
+
 
 if __name__ == "__main__":
     mp.set_start_method("spawn", force=True)
@@ -133,15 +132,15 @@ if __name__ == "__main__":
             # OneNet uses RGB input as default
             img = read_image(path, format="RGB")
             start_time = time.time()
-            predictions, visualized_output = demo.run_on_image(
-                img, args.confidence_threshold)
+            predictions, visualized_output = demo.run_on_image(img, args.confidence_threshold)
             logger.info(
                 "{}: {} in {:.2f}s".format(
                     path,
-                    "detected {} instances".format(
-                        len(predictions["instances"]))
-                    if "instances" in predictions
-                    else "finished",
+                    (
+                        "detected {} instances".format(len(predictions["instances"]))
+                        if "instances" in predictions
+                        else "finished"
+                    ),
                     time.time() - start_time,
                 )
             )
@@ -149,20 +148,16 @@ if __name__ == "__main__":
             if args.output:
                 if os.path.isdir(args.output):
                     assert os.path.isdir(args.output), args.output
-                    out_filename = os.path.join(
-                        args.output, os.path.basename(path))
+                    out_filename = os.path.join(args.output, os.path.basename(path))
                 else:
-                    assert len(
-                        args.output) > 0, "Please specify a directory with args.output"
+                    assert len(args.output) > 0, "Please specify a directory with args.output"
                     out_filename = args.output
                 visualized_output.save(out_filename)
             else:
                 cv2.namedWindow(WINDOW_NAME, cv2.WINDOW_NORMAL)
-                cv2.imshow(
-                    WINDOW_NAME, visualized_output.get_image()[:, :, ::-1])
+                cv2.imshow(WINDOW_NAME, visualized_output.get_image()[:, :, ::-1])
                 if cv2.waitKey(0) == 27:
                     break  # esc to quit
-
 
     elif args.webcam:
         assert args.input is None, "Cannot have both --input and --webcam!"
@@ -184,23 +179,19 @@ if __name__ == "__main__":
         num_frames = int(video.get(cv2.CAP_PROP_FRAME_COUNT))
         basename = os.path.basename(args.video_input)
 
-        codec, file_ext = (
-            ("x264", ".mkv") if test_opencv_video_format("x264", ".mkv") else ("mp4v", ".mp4")
-        )
+        codec, file_ext = ("x264", ".mkv") if test_opencv_video_format("x264", ".mkv") else ("mp4v", ".mp4")
         if codec == ".mp4v":
             warnings.warn("x264 codec not available, switching to mp4v")
 
-        now = datetime.now() # current date and time
+        now = datetime.now()  # current date and time
         time_name = now.strftime("_%Y_%m_%d_%H_%M_%S")
         time_str = str(time_name)
-        
+
         # merge_mask video
         # fourcc_merge = cv2.VideoWriter_fourcc(*'mp4v')
         # frames_per_second_merge = video.get(cv2.CAP_PROP_FPS)
-        # out_merge = cv2.VideoWriter('/home/chenzy/FastInst-main/output/' + time_str+ basename + '.mp4', fourcc_merge, frames_per_second_merge, (640, 640), False)  
+        # out_merge = cv2.VideoWriter('/home/chenzy/FastInst-main/output/' + time_str+ basename + '.mp4', fourcc_merge, frames_per_second_merge, (640, 640), False)
         # # False: grayscale      # out_merge = cv2.VideoWriter('./table-tennis/label_mask/maskmerge_' + basename + '.mp4', fourcc_merge, frames_per_second_merge, (640, 640))
-
-        
 
         if args.output:
             if os.path.isdir(args.output):
@@ -224,7 +215,6 @@ if __name__ == "__main__":
             )
         assert os.path.isfile(args.video_input)
 
-
         # shape = (2000, 2000, 3) # y, x, RGB
         # blank_img = np.zeros(shape, np.uint8)
         paddle_L_area_list = []
@@ -233,17 +223,14 @@ if __name__ == "__main__":
         bb_boxes_pad_L_center_list = []
         bb_boxes_pad_R_center_list = []
 
-
         # Create an empty DataFrame
-        csv_data = pd.DataFrame(columns=['Frame', 'Paddle_L_Pixel'])
-
+        csv_data = pd.DataFrame(columns=["Frame", "Paddle_L_Pixel"])
 
         durations = []
         frame_count = 0
-        # for vis_frame, pred in tqdm.tqdm(demo.run_on_video(video, args.confidence_threshold), total=num_frames):
-        for vis_frame, pred in demo.run_on_video(video, args.confidence_threshold, 1):
-            
-            
+        for vis_frame, pred in tqdm(demo.run_on_video(video, args.confidence_threshold, 1), total=num_frames):
+            # for vis_frame, pred in demo.run_on_video(video, args.confidence_threshold, 1):
+
             # Calculate frames per second
             frame_count += 1
 
@@ -258,9 +245,10 @@ if __name__ == "__main__":
             # Calculate table center (class=2)
             pred_m_table = pred_m.copy()
             pred_m_class = pred_c.copy()
-            pred_m_table = pred_m_table[np.where(pred_m_class==2)]
+            pred_m_table = pred_m_table[np.where(pred_m_class == 2)]
             # print(len(pred_m))
 
+            pred_m_table_for_nobbox = pred_m_table
             if pred_m_table.shape[0] == 0:
                 # print('@@@@@@@@@@@@@@@@@@@@ Table no bbox @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@')
                 # print('pred_m_table', pred_m_table.shape)
@@ -270,36 +258,40 @@ if __name__ == "__main__":
             # print(pred_m_table_for_nobbox)
             # print(pred_m_table_for_nobbox.shape)
 
-            pred_m_table = pred_m_table.reshape((pred_m_table.shape[1], pred_m_table.shape[2]))
+            if pred_m_table.shape[0] != 0:
+                pred_m_table = pred_m_table.reshape((pred_m_table.shape[1], pred_m_table.shape[2]))
 
-            label_mask_table = pred_m_table.astype(np.uint8)
-            label_mask_table[label_mask_table == 1] = 255
+                label_mask_table = pred_m_table.astype(np.uint8)
+                label_mask_table[label_mask_table == 1] = 255
 
-            contours, hierarchy = cv2.findContours(label_mask_table, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
-            bb_boxes_table = [cv2.boundingRect(cnt) for cnt in contours]
+                contours, hierarchy = cv2.findContours(label_mask_table, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
+                bb_boxes_table = [cv2.boundingRect(cnt) for cnt in contours]
 
-            max_idx_table = 0
-            max_area = 0
-            for idx, boxes in enumerate(bb_boxes_table):
-                if boxes[2]*boxes[3] > max_area:
-                    max_idx_table = idx
-                    max_area = boxes[2]*boxes[3]
+                max_idx_table = 0
+                max_area = 0
+                for idx, boxes in enumerate(bb_boxes_table):
+                    if boxes[2] * boxes[3] > max_area:
+                        max_idx_table = idx
+                        max_area = boxes[2] * boxes[3]
 
+                table_center = int(bb_boxes_table[max_idx_table][0] + bb_boxes_table[max_idx_table][2] / 2), int(
+                    bb_boxes_table[max_idx_table][1] + bb_boxes_table[max_idx_table][3] / 2
+                )
+            else:
+                table_center = (width // 2, height // 2)
 
-            table_center = int(bb_boxes_table[max_idx_table][0] + bb_boxes_table[max_idx_table][2]/2), int(bb_boxes_table[max_idx_table][1] + bb_boxes_table[max_idx_table][3]/2)
-    
             # print("---------------------------------------------------------------------")
 
             # Calculate paddle location (class=3), person location (class=1)
             pred_m_pad_arr = pred_m.copy()
             pred_m_class = pred_c.copy()
-            pred_m_pad_arr = pred_m_pad_arr[np.where(pred_m_class==3)]      # paddle
+            pred_m_pad_arr = pred_m_pad_arr[np.where(pred_m_class == 3)]  # paddle
             # print(len(pred_m))
             # print(pred_m_pad_arr)
             # print("***************************************************************")
 
             pred_m_person_arr = pred_m.copy()
-            pred_m_person_arr = pred_m_person_arr[np.where(pred_m_class==1)]      # person
+            pred_m_person_arr = pred_m_person_arr[np.where(pred_m_class == 1)]  # person
             # print(pred_m_person_arr)
             # print("---------------------------------------------------------------------")
 
@@ -326,18 +318,16 @@ if __name__ == "__main__":
                 # print('pad_bbox: ', bb_boxes_pad)           # x, y, x+w, y+h
                 # print('pad_bbox_num: ', len(bb_boxes_pad))
 
-
                 max_idx = 0
-                if len(bb_boxes_pad) >= 2 :
+                if len(bb_boxes_pad) >= 2:
                     # print('$$$$$$$$$$$$$$$$$$$$$ Paddle more than one bbox $$$$$$$$$$$$$$$$$$$$$')
                     # print(bb_boxes_pad)
                     max_box = 0
                     for box_idx, bb_box in enumerate(bb_boxes_pad):
-                        if bb_box[2]*bb_box[3] > max_box :
-                            max_box = bb_box[2]*bb_box[3]
+                        if bb_box[2] * bb_box[3] > max_box:
+                            max_box = bb_box[2] * bb_box[3]
                             max_idx = box_idx
                             # print('max_box: ', max_box)
-
 
                 if len(bb_boxes_pad) == 0:
                     # print("bbox_pad None")
@@ -349,35 +339,33 @@ if __name__ == "__main__":
                         paddle_L_pixel.append(pred_m_pad_arr[pad_idx])
                         paddle_L_mask.append(label_mask_pad)
 
-
                         # bb_boxes_pad_L_center
-                        bb_pad_center_x = bb_boxes_pad[max_idx][0] + bb_boxes_pad[max_idx][2]/2     # x
-                        bb_pad_center_y = bb_boxes_pad[max_idx][1] + bb_boxes_pad[max_idx][3]/2     # y
+                        bb_pad_center_x = bb_boxes_pad[max_idx][0] + bb_boxes_pad[max_idx][2] / 2  # x
+                        bb_pad_center_y = bb_boxes_pad[max_idx][1] + bb_boxes_pad[max_idx][3] / 2  # y
 
                         bb_boxes_pad_L_center_list.append((bb_pad_center_x, bb_pad_center_y))
 
-                    elif table_center[0] < bb_boxes_pad[max_idx][0] < 1920 :
-                        label_mask_pad[label_mask_pad == 1] = 255                           # imgshow grayscale
+                    elif table_center[0] < bb_boxes_pad[max_idx][0] < 1920:
+                        label_mask_pad[label_mask_pad == 1] = 255  # imgshow grayscale
                         r = label_mask_pad.copy()
                         g = label_mask_pad.copy()
                         b = label_mask_pad.copy()
                         r[r == 1] = 255
                         label_mask_pad_img = np.stack((b, g, r), axis=2)
 
-                        half_image_pad = label_mask_pad_img[0:height, 960:width]            # crop half image
-
+                        half_image_pad = label_mask_pad_img[0:height, 960:width]  # crop half image
 
                         paddle_R_pixel.append(pred_m_pad_arr[pad_idx])
-                        paddle_R_mask.append(label_mask_pad)                # paddle_R_mask.append(cropped_image_pad)  paddle_R_mask.append(label_mask_pad_img)
+                        paddle_R_mask.append(
+                            label_mask_pad
+                        )  # paddle_R_mask.append(cropped_image_pad)  paddle_R_mask.append(label_mask_pad_img)
                         bb_boxs_pad.append(bb_boxes_pad[max_idx])
 
                         # bb_boxes_pad_R_center
-                        bb_pad_center_x = bb_boxes_pad[max_idx][0] + bb_boxes_pad[max_idx][2]/2     # x
-                        bb_pad_center_y = bb_boxes_pad[max_idx][1] + bb_boxes_pad[max_idx][3]/2     # y
+                        bb_pad_center_x = bb_boxes_pad[max_idx][0] + bb_boxes_pad[max_idx][2] / 2  # x
+                        bb_pad_center_y = bb_boxes_pad[max_idx][1] + bb_boxes_pad[max_idx][3] / 2  # y
 
                         bb_boxes_pad_R_center_list.append((bb_pad_center_x, bb_pad_center_y))
-
-
 
             for person_idx, pred_m_person in enumerate(pred_m_person_arr):
                 label_mask_person = pred_m_person.astype(np.uint8)
@@ -389,16 +377,15 @@ if __name__ == "__main__":
                 # print('person_box_num: ', len(bb_boxes_person))
 
                 max_idx = 0
-                if len(bb_boxes_person) >= 2 :
+                if len(bb_boxes_person) >= 2:
                     # print('$$$$$$$$$$$$$$$$$$$$$ Person more than one bbox $$$$$$$$$$$$$$$$$$$$$')
                     # print(bb_boxes_person)
                     max_box = 0
                     for box_idx, bb_box in enumerate(bb_boxes_person):
-                        if bb_box[2]*bb_box[3] > max_box :
-                            max_box = bb_box[2]*bb_box[3]
+                        if bb_box[2] * bb_box[3] > max_box:
+                            max_box = bb_box[2] * bb_box[3]
                             max_idx = box_idx
                             # print('max_box: ', max_box)
-
 
                 if len(bb_boxes_person) == 0:
                     # print("bbox_person None")
@@ -414,21 +401,21 @@ if __name__ == "__main__":
                         person_L_pixel.append(pred_m_person_arr[person_idx])
                         person_L_mask.append(label_mask_person)
 
-                    elif table_center[0] < bb_boxes_person[max_idx][0] < 1920 :
-                        label_mask_person[label_mask_person == 1] = 100                         # imgshow grayscale
+                    elif table_center[0] < bb_boxes_person[max_idx][0] < 1920:
+                        label_mask_person[label_mask_person == 1] = 100  # imgshow grayscale
                         r = label_mask_person.copy()
                         g = label_mask_person.copy()
                         b = label_mask_person.copy()
                         b[b == 1] = 255
                         label_mask_person_img = np.stack((b, g, r), axis=2)
 
-                        half_image_person = label_mask_person_img[0:height, 960:width]          # crop half image
+                        half_image_person = label_mask_person_img[0:height, 960:width]  # crop half image
 
                         person_R_pixel.append(pred_m_person_arr[person_idx])
-                        person_R_mask.append(label_mask_person)                # person_R_mask.append(cropped_image_person)  person_R_mask.append(label_mask_person_img)
+                        person_R_mask.append(
+                            label_mask_person
+                        )  # person_R_mask.append(cropped_image_person)  person_R_mask.append(label_mask_person_img)
                         bb_boxs_person.append(bb_boxes_person[max_idx])
-
-
 
             # Write every frame of R_Paddle & R_Person Merge mask
             # print('=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=')
@@ -436,25 +423,30 @@ if __name__ == "__main__":
             # print('person_R_mask', len(person_R_mask))
             # Calculate the size of each merge_mask bbox
             bb_boxs_person.extend(bb_boxs_pad)
-            if len(bb_boxs_person) >= 1 :
+            if len(bb_boxs_person) >= 1:
                 # print('bb_boxs_person', bb_boxs_person)
                 min_box_x = bb_boxs_person[0][0]
                 min_box_y = bb_boxs_person[0][1]
                 max_width = bb_boxs_person[0][2]
                 max_height = bb_boxs_person[0][3]
                 for box_idx, bb_box in enumerate(bb_boxs_person):
-                    if bb_box[0] < min_box_x :
+                    if bb_box[0] < min_box_x:
                         min_box_x = bb_box[0]
                         # print('min_box_x: ', min_box_x)                     # find the min_x (left) of merge_img
-                    if bb_box[1] < min_box_y :
+                    if bb_box[1] < min_box_y:
                         min_box_y = bb_box[1]
                         # print('mix_box_y: ', min_box_y)                     # find the min_y (top) of merge_img
-                    if bb_box[2] > max_width :
+                    if bb_box[2] > max_width:
                         max_width = bb_box[2]
                         # print('max_width: ', max_width)                     # find the max_width (right) of merge_img
-                    if bb_box[3] > max_height :
+                    if bb_box[3] > max_height:
                         max_height = bb_box[3]
                         # print('max_height: ', max_height)                   # find the max_height (bottom) of merge_img
+            else:
+                min_box_x = 0
+                min_box_y = 0
+                max_width = 0
+                max_height = 0
             # print('min_box_x: ', min_box_x, 'mix_box_y: ', min_box_y, 'max_width: ', max_width, 'max_height: ', max_height)
 
             left = min_box_x
@@ -479,8 +471,9 @@ if __name__ == "__main__":
 
                     # blank_img = cv2.addWeighted(blank_img, 0.2, merge_mask, 0.8, 0)
 
-
-                cropped_merge = merge_mask[top-50:bottom+50, left-50:right+50]            # crop merge_img bb_box range
+                cropped_merge = merge_mask[
+                    top - 50 : bottom + 50, left - 50 : right + 50
+                ]  # crop merge_img bb_box range
                 # Calculate the required padding
                 # pad_height = max(0, 120 - cropped_merge.shape[0])
                 # pad_width = max(0, 240 - cropped_merge.shape[1])
@@ -494,7 +487,9 @@ if __name__ == "__main__":
                 # Pad the image
 
                 # print('cropped_merge', cropped_merge.shape)
-                padded_cropped_merge = np.pad(cropped_merge, ((top_pad, bottom_pad), (left_pad, right_pad)), mode='constant')      
+                padded_cropped_merge = np.pad(
+                    cropped_merge, ((top_pad, bottom_pad), (left_pad, right_pad)), mode="constant"
+                )
                 # (0, 0): grayscale   # padded_cropped_merge = np.pad(cropped_merge, ((top_pad, bottom_pad), (left_pad, right_pad), (0, 0)), mode='constant')
                 # print('padded_cropped_merge', padded_cropped_merge.shape)
                 # img_frame_path = '/home/chenzy/FastInst-main/output/test_img/' + time_str
@@ -506,11 +501,13 @@ if __name__ == "__main__":
                 # cv2.imshow('merge_mask', padded_cropped_merge)
                 # cv2.imwrite('/home/chenzy/FastInst-main/output/test_img/overlap_' + time_str + '.png', blank_img)
                 # out_merge.write(padded_cropped_merge)             # write label mask video
-                
+
             else:
                 # print("Right Area is None")
                 # create a black image
-                black_img = np.zeros((640, 640), dtype = np.uint8)          # black_img = np.zeros((height, 960, 3), dtype = np.uint8)
+                black_img = np.zeros(
+                    (640, 640), dtype=np.uint8
+                )  # black_img = np.zeros((height, 960, 3), dtype = np.uint8)
                 # cv2.imwrite('./table-tennis/label_mask/merge_R/merge_R_' + 'frame_' + str(frame_count) + '.png', black_img)
                 # cv2.putText(black_img, "Frame: " + str(frame_count), (10, 50), cv2.FONT_HERSHEY_SIMPLEX, 1.5, (0, 0, 255), 5, cv2.LINE_4)
                 # cv2.namedWindow('merge_mask', 0)
@@ -520,37 +517,62 @@ if __name__ == "__main__":
 
             if args.output:
                 # cv2.putText(vis_frame, "FPS: " + str(float("{:.2f}".format(1/(np.mean(durations))))), (50, 150), cv2.FONT_HERSHEY_SIMPLEX, 1.5, (0, 0, 0), 5, cv2.LINE_4)
-                cv2.putText(vis_frame, "Frame: " + str(frame_count), (50, 170), cv2.FONT_HERSHEY_SIMPLEX, 1.5, (255, 0, 0), 5, cv2.LINE_4)
-
+                cv2.putText(
+                    vis_frame,
+                    "Frame: " + str(frame_count),
+                    (50, 170),
+                    cv2.FONT_HERSHEY_SIMPLEX,
+                    1.5,
+                    (255, 0, 0),
+                    5,
+                    cv2.LINE_4,
+                )
 
                 # print('*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-')
                 # print('paddle_L_pixel: ', paddle_L_pixel)
 
                 # Left Paddle
                 if len(paddle_L_pixel) == 0:
-                    paddle_L_str = ''
+                    paddle_L_str = ""
                 else:
-                    
-                    path_str = args.output + "_left_paddle_" + time_str+ ".csv"
+
+                    path_str = args.output + "_left_paddle_" + time_str + ".csv"
                     paddle_L_str = str(paddle_L_pixel[0].sum())
                     # with open(path_str, 'wb') as f_L:
                     #     csv_write_L = csv.writer(f_L)
                     #     csv_write_L.writerow(paddle_L_str)
-                cv2.putText(vis_frame, "Left Paddle Area: " + paddle_L_str, (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1.5, (0, 0, 255), 5, cv2.LINE_4)
+                cv2.putText(
+                    vis_frame,
+                    "Left Paddle Area: " + paddle_L_str,
+                    (50, 50),
+                    cv2.FONT_HERSHEY_SIMPLEX,
+                    1.5,
+                    (0, 0, 255),
+                    5,
+                    cv2.LINE_4,
+                )
 
                 # Right Paddle
                 if len(paddle_R_pixel) == 0:
-                    paddle_R_str = ''
+                    paddle_R_str = ""
                 else:
-                    path_str = args.output + "_Right_paddle_" + time_str+ ".csv"
+                    path_str = args.output + "_Right_paddle_" + time_str + ".csv"
                     paddle_R_str = str(paddle_R_pixel[0].sum())
                     # print(paddle_R_str)
                     # with open(path_str, 'wb') as f_R:
                     #     csv_write_R = csv.writer(f_R)
                     #     csv_write_R.writerow(paddle_R_str)
-                        
-                cv2.putText(vis_frame, "Right Paddle Area: " + paddle_R_str, (50, 110), cv2.FONT_HERSHEY_SIMPLEX, 1.5, (0, 0, 255), 5, cv2.LINE_4)
-                
+
+                cv2.putText(
+                    vis_frame,
+                    "Right Paddle Area: " + paddle_R_str,
+                    (50, 110),
+                    cv2.FONT_HERSHEY_SIMPLEX,
+                    1.5,
+                    (0, 0, 255),
+                    5,
+                    cv2.LINE_4,
+                )
 
                 # Build paddle area table in video
                 if len(paddle_L_pixel) == 0:
@@ -566,9 +588,9 @@ if __name__ == "__main__":
                 paddle_R_area_list.append(paddle_R_area)
 
                 # Set the desired plot size
-                plot_width = 1200             # 720       1920      1200
-                plot_height = 420
-                plot_x = 720                  # 1200      0         720
+                plot_width = 600  # 1200  # 720       1920      1200
+                plot_height = 210  # 420
+                plot_x = 720  # 1200      0         720
                 plot_y = 0
                 # Initialize the plot
                 plt.figure(figsize=(plot_width / 100, plot_height / 100))
@@ -587,10 +609,9 @@ if __name__ == "__main__":
 
                 # Extract the area data points for plotting
                 x_data = range(x_min, x_max)
-                y_data_L = paddle_L_area_list[x_min:x_max + 1]
-                y_data_R = paddle_R_area_list[x_min:x_max + 1]
+                y_data_L = paddle_L_area_list[x_min : x_max + 1]
+                y_data_R = paddle_R_area_list[x_min : x_max + 1]
 
-                
                 # Initialise the subplot function using number of rows and columns
                 figure, area_table = plt.subplots(1, 2)
 
@@ -600,20 +621,18 @@ if __name__ == "__main__":
                 y_lim_area = (0, 3000)
 
                 # Plot for the first subplot : Paddle_Area_L
-                area_table[0].plot(x_data, y_data_L, 'ro-', markersize=1)               # Paddle_Area_L : Blue
+                area_table[0].plot(x_data, y_data_L, "ro-", markersize=1)  # Paddle_Area_L : Blue
                 area_table[0].set_xlim(x_lim_area)
                 area_table[0].set_ylim(y_lim_area)
-                area_table[0].set_xlabel('Frame')
-                area_table[0].set_ylabel('Paddle Pixels Area')
+                area_table[0].set_xlabel("Frame")
+                area_table[0].set_ylabel("Paddle Pixels Area")
                 # Plot for the first subplot : Paddle_Area_R
-                area_table[0].plot(x_data, y_data_R, 'go-', markersize=1)               # Paddle_Area_R : Green
+                area_table[0].plot(x_data, y_data_R, "go-", markersize=1)  # Paddle_Area_R : Green
 
-
-                area_table[0].legend(['Left Paddle', 'Right Paddle'])
-
+                area_table[0].legend(["Left Paddle", "Right Paddle"])
 
                 ##################################################################################################################
-                
+
                 # Convert the plot to an image
                 fig = plt.gcf()
                 fig.set_size_inches(plot_width / 100, plot_height / 100)
@@ -626,68 +645,78 @@ if __name__ == "__main__":
                 # Create a copy of the frame to overlay the plot
                 vis_frame_with_plot = vis_frame.copy()
                 # Overlay the plot image on top of the frame
-                vis_frame_with_plot[plot_y:plot_y + plot_height, plot_x:plot_x + plot_width] = plot_img_resized_rgb
+                vis_frame_with_plot[plot_y : plot_y + plot_height, plot_x : plot_x + plot_width] = plot_img_resized_rgb
 
                 ################################################################
                 # Plot paddle route
                 # print('bb_boxes_pad_R_center_list', bb_boxes_pad_R_center_list)
 
-
                 # Determine the x-axis limits based on the frame count
                 frame_count_range = 37
                 if frame_count > frame_count_range:
-                    frame_min_pad_L = len(bb_boxes_pad_L_center_list) - frame_count_range             # frame_min = frame_count - frame_count_range
-                    frame_min_pad_R = len(bb_boxes_pad_R_center_list) - frame_count_range
+                    frame_min_pad_L = (
+                        (len(bb_boxes_pad_L_center_list) - frame_count_range)
+                        if (len(bb_boxes_pad_L_center_list) - frame_count_range) >= 0
+                        else 0
+                    )
+                    # frame_min = frame_count - frame_count_range
+                    frame_min_pad_R = (
+                        (len(bb_boxes_pad_R_center_list) - frame_count_range)
+                        if len(bb_boxes_pad_R_center_list) - frame_count_range >= 0
+                        else 0
+                    )
                     frame_max = frame_count
                 else:
                     frame_min_pad_L = 0
-                    frame_min_pad_R = 0                  # frame_min = 0
+                    frame_min_pad_R = 0  # frame_min = 0
                     frame_max = frame_count
 
                 x_data_route = range(frame_min_pad_L, frame_count)
 
                 for i in range(frame_min_pad_L, min(frame_max, len(bb_boxes_pad_L_center_list))):
                     # Calculate the color gradient based on the frame index
-                    gradient = (len(bb_boxes_pad_L_center_list) - i) / 37           # gradient = (frame_count - i) / 30
-                    color_component = int(255 - (gradient * 255))                   # Decreasing component for gradient
-                    color = (color_component, color_component-50, 0)                # Light blue to dark blue gradient
+                    gradient = (len(bb_boxes_pad_L_center_list) - i) / 37  # gradient = (frame_count - i) / 30
+                    color_component = int(255 - (gradient * 255))  # Decreasing component for gradient
+                    color = (color_component, color_component - 50, 0)  # Light blue to dark blue gradient
                     center = (int(bb_boxes_pad_L_center_list[i][0]), int(bb_boxes_pad_L_center_list[i][1]))
                     cv2.circle(vis_frame_with_plot, center, 5, color, -1)
 
                     # Plot for the second subplot : Paddle_route
-                    x_lim_route = (300, 650)         #   (250, 650)       # (450, 700)      # (300, 650)
-                    y_lim_route = (350, 650)         #   (200, 500)       # (350, 600)      # (350, 650)
+                    x_lim_route = (300, 650)  #   (250, 650)       # (450, 700)      # (300, 650)
+                    y_lim_route = (350, 650)  #   (200, 500)       # (350, 600)      # (350, 650)
                     # print('i: ', i)
                     # print('center', center)
                     # Plot for the second subplot: Paddle_route
 
-                    color_component_2 = int(gradient * 255)                                             # Increasing component for gradient
-                    color_2 = (0, max((color_component_2-30)/255, 0), color_component_2/255)            # yellow to black gradient
+                    color_component_2 = int(gradient * 255)  # Increasing component for gradient
+                    color_2 = (
+                        0,
+                        max((color_component_2 - 30) / 255, 0),
+                        color_component_2 / 255,
+                    )  # yellow to black gradient
                     # color_2 = (0, 0, color_component_2/255)                                           # red to black gradient
                     color_normalized = color_2[:3]
-                    area_table[1].scatter([center[0]], [1080-center[1]], c=[color_normalized], marker='o', s=50)
+                    area_table[1].scatter([center[0]], [1080 - center[1]], c=[color_normalized], marker="o", s=50)
 
-                    area_table[1].set_xlim(x_lim_route)                 # (x_lim_route) (0, 1)
-                    area_table[1].set_ylim(y_lim_route)                 # (y_lim_route)  (0, 1)
-                    area_table[1].set_xlabel('x-position')
-                    area_table[1].set_ylabel('y-position')
-                    legend_L_pad = mlines.Line2D([], [], marker='o', markersize=3, label='Paddle route')      # color='cyan'
+                    area_table[1].set_xlim(x_lim_route)  # (x_lim_route) (0, 1)
+                    area_table[1].set_ylim(y_lim_route)  # (y_lim_route)  (0, 1)
+                    area_table[1].set_xlabel("x-position")
+                    area_table[1].set_ylabel("y-position")
+                    legend_L_pad = mlines.Line2D([], [], marker="o", markersize=3, label="Paddle route")  # color='cyan'
                     area_table[1].legend(handles=[legend_L_pad])
 
                 for i in range(frame_min_pad_R, min(frame_max, len(bb_boxes_pad_R_center_list))):
                     # if i < len(bb_boxes_pad_R_center_list):
                     # Calculate the color gradient based on the frame index
-                    gradient = (len(bb_boxes_pad_R_center_list) - i) / 20           # gradient = (frame_count - i) / 30
-                    color_component = int(255 - (gradient * 255))                   # Decreasing component for gradient        color = (0, 255, 0)   # BGR
-                    color = (color_component-100, color_component, 0)                                 # Light green to dark green gradient
+                    gradient = (len(bb_boxes_pad_R_center_list) - i) / 20  # gradient = (frame_count - i) / 30
+                    color_component = int(
+                        255 - (gradient * 255)
+                    )  # Decreasing component for gradient        color = (0, 255, 0)   # BGR
+                    color = (color_component - 100, color_component, 0)  # Light green to dark green gradient
                     center = (int(bb_boxes_pad_R_center_list[i][0]), int(bb_boxes_pad_R_center_list[i][1]))
                     # print('*-*-*-*--*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*')
                     # print('pad_R_center: ', center)
                     cv2.circle(vis_frame_with_plot, center, 5, color, -1)
-
-
-
-
 
                 # Convert the plot to an image
                 fig = plt.gcf()
@@ -701,17 +730,17 @@ if __name__ == "__main__":
                 # Create a copy of the frame to overlay the plot
                 vis_frame_with_plot = vis_frame_with_plot.copy()
                 # Overlay the plot image on top of the frame
-                vis_frame_with_plot[plot_y:plot_y + plot_height, plot_x:plot_x + plot_width] = plot_img_resized_rgb
+                vis_frame_with_plot[plot_y : plot_y + plot_height, plot_x : plot_x + plot_width] = plot_img_resized_rgb
                 output_file.write(vis_frame_with_plot)
                 # print(paddle_L_area_list)
                 # print(paddle_R_area_list)
 
                 path_csv_str = str(args.output)
                 csv_name = str(args.video_input)
-                path_R = path_csv_str +"/"  +"_R_paddle.txt"
+                path_R = path_csv_str + "/" + "_R_paddle.txt"
                 # path_L = path_csv_str +"/"  + "_L_paddle.txt"
 
-                with open(path_R, 'w', newline='') as csvfile_1:
+                with open(path_R, "w", newline="") as csvfile_1:
                     writer = csv.writer(csvfile_1)
                     # writer.writerow(['right', 'area'])
                     writer.writerow(paddle_R_area_list)
@@ -724,7 +753,6 @@ if __name__ == "__main__":
                 cv2.imshow(basename, vis_frame)
                 if cv2.waitKey(1) == 27:
                     break  # esc to quit
-
 
         video.release()
         if args.output:

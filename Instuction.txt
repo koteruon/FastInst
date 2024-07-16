@@ -1,0 +1,5 @@
+1、先跑
+python demo/demo_paddle_any_yun_twoplyer.py --config-file configs/table_tennis/fastinst_S50_T5_table_tennis.yaml --video-input IMG_side_20231113-141215.mov --output output/video_output  --confidence-threshold 0.75
+2、會吐一個_R_paddle.txt出來
+3、跑mediapipe
+python mediapipe/test_mpipe_holistic_arm_palm.py
