@@ -4,9 +4,9 @@ import argparse
 import glob
 import multiprocessing as mp
 import os
-from datetime import datetime
 # fmt: off
 import sys
+from datetime import datetime
 
 sys.path.insert(1, os.path.join(sys.path[0], '..'))
 # fmt: on
@@ -18,12 +18,10 @@ import warnings
 import cv2
 import numpy as np
 import tqdm
-
 from detectron2.config import get_cfg
 from detectron2.data.detection_utils import read_image
 from detectron2.projects.deeplab import add_deeplab_config
 from detectron2.utils.logger import setup_logger
-
 from fastinst import add_fastinst_config
 from predictor import VisualizationDemo
 
@@ -61,13 +59,12 @@ def get_parser():
     parser.add_argument(
         "--input",
         nargs="+",
-        help="A list of space separated input images; "
-             "or a single glob pattern such as 'directory/*.jpg'",
+        help="A list of space separated input images; " "or a single glob pattern such as 'directory/*.jpg'",
     )
     parser.add_argument(
         "--output",
         help="A file or directory to save output visualizations. "
-             "If not given, will show output in an OpenCV window.",
+        "If not given, will show output in an OpenCV window.",
     )
 
     parser.add_argument(
@@ -126,9 +123,11 @@ if __name__ == "__main__":
             logger.info(
                 "{}: {} in {:.2f}s".format(
                     path,
-                    "detected {} instances".format(len(predictions["instances"]))
-                    if "instances" in predictions
-                    else "finished",
+                    (
+                        "detected {} instances".format(len(predictions["instances"]))
+                        if "instances" in predictions
+                        else "finished"
+                    ),
                     time.time() - start_time,
                 )
             )
@@ -164,13 +163,11 @@ if __name__ == "__main__":
         frames_per_second = video.get(cv2.CAP_PROP_FPS)
         num_frames = int(video.get(cv2.CAP_PROP_FRAME_COUNT))
         basename = os.path.basename(args.video_input)
-        codec, file_ext = (
-            ("x264", ".mkv") if test_opencv_video_format("x264", ".mkv") else ("mp4v", ".mp4")
-        )
+        codec, file_ext = ("x264", ".mkv") if test_opencv_video_format("x264", ".mkv") else ("mp4v", ".mp4")
         if codec == ".mp4v":
             warnings.warn("x264 codec not available, switching to mp4v")
 
-        now = datetime.now() # current date and time
+        now = datetime.now()  # current date and time
         time = now.strftime("_%Y_%m_%d_%H_%M_%S")
         time_str = str(time)
         if args.output:
@@ -193,7 +190,10 @@ if __name__ == "__main__":
             )
         assert os.path.isfile(args.video_input)
         # for vis_frame in tqdm.tqdm(demo.run_on_video(video), total=num_frames):
-        for vis_frame in tqdm.tqdm(demo.run_on_video(video, args.confidence_threshold, 0), total=num_frames, ):
+        for vis_frame in tqdm.tqdm(
+            demo.run_on_video(video, args.confidence_threshold, 0),
+            total=num_frames,
+        ):
             if args.output:
                 output_file.write(vis_frame)
                 # print(vis_frame)

@@ -6,10 +6,11 @@ This script is a simplified version of the training script in detectron2/tools.
 """
 try:
     # ignore ShapelyDeprecationWarning from fvcore
-    from shapely.errors import ShapelyDeprecationWarning
     import warnings
 
-    warnings.filterwarnings('ignore', category=ShapelyDeprecationWarning)
+    from shapely.errors import ShapelyDeprecationWarning
+
+    warnings.filterwarnings("ignore", category=ShapelyDeprecationWarning)
 except:
     pass
 
@@ -26,12 +27,7 @@ from detectron2.checkpoint import DetectionCheckpointer
 from detectron2.config import get_cfg
 from detectron2.data import MetadataCatalog, build_detection_train_loader
 from detectron2.data.datasets import register_coco_instances
-from detectron2.engine import (
-    DefaultTrainer,
-    default_argument_parser,
-    default_setup,
-    launch,
-)
+from detectron2.engine import DefaultTrainer, default_argument_parser, default_setup, launch
 from detectron2.evaluation import (
     CityscapesInstanceEvaluator,
     CityscapesSemSegEvaluator,
@@ -50,20 +46,27 @@ from detectron2.utils.logger import setup_logger
 from fastinst import (
     COCOInstanceNewBaselineDatasetMapper,
     COCOPanopticNewBaselineDatasetMapper,
-    InstanceSegEvaluator,
     FastInstInstanceDatasetMapper,
+    InstanceSegEvaluator,
     MaskFormerPanopticDatasetMapper,
     MaskFormerSemanticDatasetMapper,
     SemanticSegmentorWithTTA,
     add_fastinst_config,
 )
 
-
-register_coco_instances("table-tennis_train", {}, "datasets/table-tennis/train/annotation/annotations.json", "datasets/table-tennis/train/data")
-register_coco_instances("table-tennis_val", {}, "datasets/table-tennis/val/annotation/annotations.json", "datasets/table-tennis/val/data")
+register_coco_instances(
+    "table-tennis_train",
+    {},
+    "datasets/table-tennis/train/annotation/annotations.json",
+    "datasets/table-tennis/train/data",
+)
+register_coco_instances(
+    "table-tennis_val", {}, "datasets/table-tennis/val/annotation/annotations.json", "datasets/table-tennis/val/data"
+)
 
 # register_coco_instances("table-tennis_train", {}, "datasets/new_table_tennis/ana/train.json", "datasets/new_table_tennis/data")
 # register_coco_instances("table-tennis_val", {}, "datasets/new_table_tennis/ana/val.json", "datasets/new_table_tennis/data")
+
 
 # /home/chenzy/FastInst-main/datasets/table-tennis/train/data/M-5_frame0140.jpg
 class Trainer(DefaultTrainer):
@@ -112,23 +115,23 @@ class Trainer(DefaultTrainer):
         # Cityscapes
         if evaluator_type == "cityscapes_instance":
             assert (
-                    torch.cuda.device_count() > comm.get_rank()
+                torch.cuda.device_count() > comm.get_rank()
             ), "CityscapesEvaluator currently do not work with multiple machines."
             return CityscapesInstanceEvaluator(dataset_name)
         if evaluator_type == "cityscapes_sem_seg":
             assert (
-                    torch.cuda.device_count() > comm.get_rank()
+                torch.cuda.device_count() > comm.get_rank()
             ), "CityscapesEvaluator currently do not work with multiple machines."
             return CityscapesSemSegEvaluator(dataset_name)
         if evaluator_type == "cityscapes_panoptic_seg":
             if cfg.MODEL.FASTINST.TEST.SEMANTIC_ON:
                 assert (
-                        torch.cuda.device_count() > comm.get_rank()
+                    torch.cuda.device_count() > comm.get_rank()
                 ), "CityscapesEvaluator currently do not work with multiple machines."
                 evaluator_list.append(CityscapesSemSegEvaluator(dataset_name))
             if cfg.MODEL.FASTINST.TEST.INSTANCE_ON:
                 assert (
-                        torch.cuda.device_count() > comm.get_rank()
+                    torch.cuda.device_count() > comm.get_rank()
                 ), "CityscapesEvaluator currently do not work with multiple machines."
                 evaluator_list.append(CityscapesInstanceEvaluator(dataset_name))
         # ADE20K
@@ -139,9 +142,7 @@ class Trainer(DefaultTrainer):
             return LVISEvaluator(dataset_name, output_dir=output_folder)
         if len(evaluator_list) == 0:
             raise NotImplementedError(
-                "no Evaluator for the dataset {} with the type {}".format(
-                    dataset_name, evaluator_type
-                )
+                "no Evaluator for the dataset {} with the type {}".format(dataset_name, evaluator_type)
             )
         elif len(evaluator_list) == 1:
             return evaluator_list[0]
@@ -218,10 +219,7 @@ class Trainer(DefaultTrainer):
                 hyperparams = copy.copy(defaults)
                 if "backbone" in module_name:
                     hyperparams["lr"] = hyperparams["lr"] * cfg.SOLVER.BACKBONE_MULTIPLIER
-                if (
-                        "relative_position_bias_table" in module_param_name
-                        or "absolute_pos_embed" in module_param_name
-                ):
+                if "relative_position_bias_table" in module_param_name or "absolute_pos_embed" in module_param_name:
                     print(module_param_name)
                     hyperparams["weight_decay"] = 0.0
                 if isinstance(module, norm_module_types):
@@ -234,9 +232,9 @@ class Trainer(DefaultTrainer):
             # detectron2 doesn't have full model gradient clipping now
             clip_norm_val = cfg.SOLVER.CLIP_GRADIENTS.CLIP_VALUE
             enable = (
-                    cfg.SOLVER.CLIP_GRADIENTS.ENABLED
-                    and cfg.SOLVER.CLIP_GRADIENTS.CLIP_TYPE == "full_model"
-                    and clip_norm_val > 0.0
+                cfg.SOLVER.CLIP_GRADIENTS.ENABLED
+                and cfg.SOLVER.CLIP_GRADIENTS.CLIP_TYPE == "full_model"
+                and clip_norm_val > 0.0
             )
 
             class FullModelGradientClippingOptimizer(optim):
@@ -253,9 +251,7 @@ class Trainer(DefaultTrainer):
                 params, cfg.SOLVER.BASE_LR, momentum=cfg.SOLVER.MOMENTUM
             )
         elif optimizer_type == "ADAMW":
-            optimizer = maybe_add_full_model_gradient_clipping(torch.optim.AdamW)(
-                params, cfg.SOLVER.BASE_LR
-            )
+            optimizer = maybe_add_full_model_gradient_clipping(torch.optim.AdamW)(params, cfg.SOLVER.BASE_LR)
         else:
             raise NotImplementedError(f"no optimizer type {optimizer_type}")
         if not cfg.SOLVER.CLIP_GRADIENTS.CLIP_TYPE == "full_model":
@@ -269,9 +265,7 @@ class Trainer(DefaultTrainer):
         logger.info("Running inference with test-time augmentation ...")
         model = SemanticSegmentorWithTTA(cfg, model)
         evaluators = [
-            cls.build_evaluator(
-                cfg, name, output_folder=os.path.join(cfg.OUTPUT_DIR, "inference_TTA")
-            )
+            cls.build_evaluator(cfg, name, output_folder=os.path.join(cfg.OUTPUT_DIR, "inference_TTA"))
             for name in cfg.DATASETS.TEST
         ]
         res = cls.test(cfg, model, evaluators)
@@ -301,9 +295,7 @@ def main(args):
 
     if args.eval_only:
         model = Trainer.build_model(cfg)
-        DetectionCheckpointer(model, save_dir=cfg.OUTPUT_DIR).resume_or_load(
-            cfg.MODEL.WEIGHTS, resume=args.resume
-        )
+        DetectionCheckpointer(model, save_dir=cfg.OUTPUT_DIR).resume_or_load(cfg.MODEL.WEIGHTS, resume=args.resume)
         res = Trainer.test(cfg, model)
         if cfg.TEST.AUG.ENABLED:
             res.update(Trainer.test_with_TTA(cfg, model))

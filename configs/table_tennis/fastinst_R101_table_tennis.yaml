@@ -2,10 +2,11 @@ _BASE_: FastInst_table_tennis_Base.yaml
 MODEL:
   BACKBONE:
     NAME: "build_resnet_backbone"
-  # WEIGHTS: "R-101.pkl"
-  WEIGHTS: "output/table_tennis/28_fastinst_R101_0626_2/model_final.pth" #inference
+  WEIGHTS: "model/R-101.pkl"
+  # WEIGHTS: "output/table_tennis/28_fastinst_R101_0626_2/model_final.pth" #inference
+  # WEIGHTS: "output/ideathon/20240829_02/model_final.pth" #inference
   RESNETS:
     DEPTH: 101
   FASTINST:
     DEC_LAYERS: 5
-OUTPUT_DIR: "output/table_tennis/28_fastinst_R101_0626_2"
+OUTPUT_DIR: "output/ideathon/20240905_03"

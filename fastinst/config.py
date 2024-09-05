@@ -43,7 +43,7 @@ def add_fastinst_config(cfg):
 
     # transformer config
     cfg.MODEL.FASTINST.NHEADS = 8
-    cfg.MODEL.FASTINST.DROPOUT = 0.
+    cfg.MODEL.FASTINST.DROPOUT = 0.0
     cfg.MODEL.FASTINST.DIM_FEEDFORWARD = 1024
     cfg.MODEL.FASTINST.DEC_LAYERS = 10
     cfg.MODEL.FASTINST.PRE_NORM = False
@@ -72,7 +72,6 @@ def add_fastinst_config(cfg):
     # pixel decoder
     cfg.MODEL.SEM_SEG_HEAD.PIXEL_DECODER_NAME = "FastInstEncoderV1"
 
-
     # swin transformer backbone
     cfg.MODEL.SWIN = CN()
     cfg.MODEL.SWIN.PRETRAIN_IMG_SIZE = 224
@@ -91,7 +90,6 @@ def add_fastinst_config(cfg):
     cfg.MODEL.SWIN.PATCH_NORM = True
     cfg.MODEL.SWIN.OUT_FEATURES = ["res2", "res3", "res4", "res5"]
     cfg.MODEL.SWIN.USE_CHECKPOINT = False
-
 
     # addation
     cfg.MODEL.FPN.TOP_LEVELS = 2

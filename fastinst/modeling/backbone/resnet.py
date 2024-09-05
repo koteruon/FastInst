@@ -2,10 +2,9 @@
 import math
 
 import torch.nn as nn
-from detectron2.layers import NaiveSyncBatchNorm, DeformConv
-from detectron2.layers import ShapeSpec, FrozenBatchNorm2d
-from detectron2.modeling import Backbone, BACKBONE_REGISTRY
-from timm.models.layers import DropBlock2d, DropPath, AvgPool2dSame, SplitAttn
+from detectron2.layers import DeformConv, FrozenBatchNorm2d, NaiveSyncBatchNorm, ShapeSpec
+from detectron2.modeling import BACKBONE_REGISTRY, Backbone
+from timm.models.layers import AvgPool2dSame, DropBlock2d, DropPath, SplitAttn
 from timm.models.resnet import BasicBlock, Bottleneck
 
 
@@ -15,34 +14,34 @@ def get_padding(kernel_size, stride, dilation=1):
 
 
 class ResNestBottleneck(nn.Module):
-    """ResNet Bottleneck
-    """
+    """ResNet Bottleneck"""
+
     # pylint: disable=unused-argument
     expansion = 4
 
     def __init__(
-            self,
-            inplanes,
-            planes,
-            stride=1,
-            downsample=None,
-            radix=1,
-            cardinality=1,
-            base_width=64,
-            avd=True,
-            avd_first=False,
-            is_first=False,
-            reduce_first=1,
-            dilation=1,
-            first_dilation=None,
-            act_layer=nn.ReLU,
-            # act_layer=nn.GELU,
-            # norm_layer=nn.GroupNorm,
-            norm_layer=nn.BatchNorm2d,
-            attn_layer=None,
-            aa_layer=None,
-            drop_block=None,
-            drop_path=None,
+        self,
+        inplanes,
+        planes,
+        stride=1,
+        downsample=None,
+        radix=1,
+        cardinality=1,
+        base_width=64,
+        avd=True,
+        avd_first=False,
+        is_first=False,
+        reduce_first=1,
+        dilation=1,
+        first_dilation=None,
+        act_layer=nn.ReLU,
+        # act_layer=nn.GELU,
+        # norm_layer=nn.GroupNorm,
+        norm_layer=nn.BatchNorm2d,
+        attn_layer=None,
+        aa_layer=None,
+        drop_block=None,
+        drop_path=None,
     ):
         super(ResNestBottleneck, self).__init__()
         assert reduce_first == 1  # not supported
@@ -50,7 +49,7 @@ class ResNestBottleneck(nn.Module):
         assert aa_layer is None  # TODO not yet supported
         assert drop_path is None  # TODO not yet supported
 
-        group_width = int(planes * (base_width / 64.)) * cardinality
+        group_width = int(planes * (base_width / 64.0)) * cardinality
         first_dilation = first_dilation or dilation
         if avd and (stride > 1 or is_first):
             avd_stride = stride
@@ -66,27 +65,43 @@ class ResNestBottleneck(nn.Module):
 
         if self.radix >= 1:
             self.conv2 = SplitAttn(
-                group_width, group_width, kernel_size=3, stride=stride, padding=first_dilation,
-                dilation=first_dilation, groups=cardinality, radix=radix, norm_layer=norm_layer, drop_layer=drop_block)
+                group_width,
+                group_width,
+                kernel_size=3,
+                stride=stride,
+                padding=first_dilation,
+                dilation=first_dilation,
+                groups=cardinality,
+                radix=radix,
+                norm_layer=norm_layer,
+                drop_layer=drop_block,
+            )
             self.bn2 = nn.Identity()
             self.drop_block = nn.Identity()
             self.act2 = nn.Identity()
         else:
             self.conv2 = nn.Conv2d(
-                group_width, group_width, kernel_size=3, stride=stride, padding=first_dilation,
-                dilation=first_dilation, groups=cardinality, bias=False)
+                group_width,
+                group_width,
+                kernel_size=3,
+                stride=stride,
+                padding=first_dilation,
+                dilation=first_dilation,
+                groups=cardinality,
+                bias=False,
+            )
             self.bn2 = norm_layer(group_width)
             self.drop_block = drop_block() if drop_block is not None else nn.Identity()
             self.act2 = act_layer(inplace=True)
         self.avd_last = nn.AvgPool2d(3, avd_stride, padding=1) if avd_stride > 0 and not avd_first else None
 
         self.conv3 = nn.Conv2d(group_width, planes * 4, kernel_size=1, bias=False)
-        self.bn3 = norm_layer(planes*4)
+        self.bn3 = norm_layer(planes * 4)
         self.act3 = act_layer(inplace=True)
         self.downsample = downsample
 
     def zero_init_last(self):
-        if getattr(self.bn3, 'weight', None) is not None:
+        if getattr(self.bn3, "weight", None) is not None:
             nn.init.zeros_(self.bn3.weight)
 
     def forward(self, x):
@@ -121,9 +136,24 @@ class ResNestBottleneck(nn.Module):
 class DeformableBottleneck(nn.Module):
     expansion = 4
 
-    def __init__(self, inplanes, planes, stride=1, downsample=None, cardinality=1, base_width=64,
-                 reduce_first=1, dilation=1, first_dilation=None, act_layer=nn.ReLU, norm_layer=nn.BatchNorm2d,
-                 attn_layer=None, aa_layer=None, drop_block=None, drop_path=None):
+    def __init__(
+        self,
+        inplanes,
+        planes,
+        stride=1,
+        downsample=None,
+        cardinality=1,
+        base_width=64,
+        reduce_first=1,
+        dilation=1,
+        first_dilation=None,
+        act_layer=nn.ReLU,
+        norm_layer=nn.BatchNorm2d,
+        attn_layer=None,
+        aa_layer=None,
+        drop_block=None,
+        drop_path=None,
+    ):
         super().__init__()
 
         width = int(math.floor(planes * (base_width / 64)) * cardinality)
@@ -137,12 +167,7 @@ class DeformableBottleneck(nn.Module):
         self.act1 = act_layer(inplace=True)
 
         self.conv2_offset = nn.Conv2d(
-            first_planes,
-            18,
-            kernel_size=3,
-            stride=stride,
-            padding=first_dilation,
-            dilation=first_dilation
+            first_planes, 18, kernel_size=3, stride=stride, padding=first_dilation, dilation=first_dilation
         )
         self.conv2 = DeformConv(
             first_planes,
@@ -208,22 +233,23 @@ BLOCK_TYPE = {
 }
 
 
-def downsample_conv(
-        in_channels, out_channels, kernel_size, stride=1, dilation=1, first_dilation=None, norm_layer=None):
+def downsample_conv(in_channels, out_channels, kernel_size, stride=1, dilation=1, first_dilation=None, norm_layer=None):
     norm_layer = norm_layer or nn.BatchNorm2d
     kernel_size = 1 if stride == 1 and dilation == 1 else kernel_size
     first_dilation = (first_dilation or dilation) if kernel_size > 1 else 1
     p = get_padding(kernel_size, stride, first_dilation)
 
-    return nn.Sequential(*[
-        nn.Conv2d(
-            in_channels, out_channels, kernel_size, stride=stride, padding=p, dilation=first_dilation, bias=False),
-        norm_layer(out_channels)
-    ])
+    return nn.Sequential(
+        *[
+            nn.Conv2d(
+                in_channels, out_channels, kernel_size, stride=stride, padding=p, dilation=first_dilation, bias=False
+            ),
+            norm_layer(out_channels),
+        ]
+    )
 
 
-def downsample_avg(
-        in_channels, out_channels, kernel_size, stride=1, dilation=1, first_dilation=None, norm_layer=None):
+def downsample_avg(in_channels, out_channels, kernel_size, stride=1, dilation=1, first_dilation=None, norm_layer=None):
     norm_layer = norm_layer or nn.BatchNorm2d
     avg_stride = stride if dilation == 1 else 1
     if stride == 1 and dilation == 1:
@@ -232,23 +258,33 @@ def downsample_avg(
         avg_pool_fn = AvgPool2dSame if avg_stride == 1 and dilation > 1 else nn.AvgPool2d
         pool = avg_pool_fn(2, avg_stride, ceil_mode=True, count_include_pad=False)
 
-    return nn.Sequential(*[
-        pool,
-        nn.Conv2d(in_channels, out_channels, 1, stride=1, padding=0, bias=False),
-        norm_layer(out_channels)
-    ])
+    return nn.Sequential(
+        *[pool, nn.Conv2d(in_channels, out_channels, 1, stride=1, padding=0, bias=False), norm_layer(out_channels)]
+    )
 
 
-def drop_blocks(drop_block_rate=0.):
+def drop_blocks(drop_block_rate=0.0):
     return [
-        None, None,
+        None,
+        None,
         DropBlock2d(drop_block_rate, 5, 0.25) if drop_block_rate else None,
-        DropBlock2d(drop_block_rate, 3, 1.00) if drop_block_rate else None]
+        DropBlock2d(drop_block_rate, 3, 1.00) if drop_block_rate else None,
+    ]
 
 
 def make_blocks(
-        stage_block, channels, block_repeats, inplanes, reduce_first=1, output_stride=32,
-        down_kernel_size=1, avg_down=False, drop_block_rate=0., drop_path_rate=0., **kwargs):
+    stage_block,
+    channels,
+    block_repeats,
+    inplanes,
+    reduce_first=1,
+    output_stride=32,
+    down_kernel_size=1,
+    avg_down=False,
+    drop_block_rate=0.0,
+    drop_path_rate=0.0,
+    **kwargs,
+):
     stages = []
     feature_info = []
     net_num_blocks = sum(block_repeats)
@@ -259,7 +295,7 @@ def make_blocks(
         # choose block_fn through the BLOCK_TYPE
         block_fn = BLOCK_TYPE[stage_block[stage_idx]]
 
-        stage_name = f'layer{stage_idx + 1}'  # never liked this name, but weight compat requires it
+        stage_name = f"layer{stage_idx + 1}"  # never liked this name, but weight compat requires it
         stride = 1 if stage_idx == 0 else 2
         if net_stride >= output_stride:
             dilation *= stride
@@ -270,21 +306,33 @@ def make_blocks(
         downsample = None
         if stride != 1 or inplanes != planes * block_fn.expansion:
             down_kwargs = dict(
-                in_channels=inplanes, out_channels=planes * block_fn.expansion, kernel_size=down_kernel_size,
-                stride=stride, dilation=dilation, first_dilation=prev_dilation, norm_layer=kwargs.get('norm_layer'))
-            downsample = downsample_avg(
-                **down_kwargs) if avg_down else downsample_conv(**down_kwargs)
+                in_channels=inplanes,
+                out_channels=planes * block_fn.expansion,
+                kernel_size=down_kernel_size,
+                stride=stride,
+                dilation=dilation,
+                first_dilation=prev_dilation,
+                norm_layer=kwargs.get("norm_layer"),
+            )
+            downsample = downsample_avg(**down_kwargs) if avg_down else downsample_conv(**down_kwargs)
 
         block_kwargs = dict(reduce_first=reduce_first, dilation=dilation, drop_block=db, **kwargs)
         blocks = []
         for block_idx in range(num_blocks):
             downsample = downsample if block_idx == 0 else None
             stride = stride if block_idx == 0 else 1
-            block_dpr = drop_path_rate * net_block_idx / \
-                        (net_num_blocks - 1)  # stochastic depth linear decay rule
-            blocks.append(block_fn(
-                inplanes, planes, stride, downsample, first_dilation=prev_dilation,
-                drop_path=DropPath(block_dpr) if block_dpr > 0. else None, **block_kwargs))
+            block_dpr = drop_path_rate * net_block_idx / (net_num_blocks - 1)  # stochastic depth linear decay rule
+            blocks.append(
+                block_fn(
+                    inplanes,
+                    planes,
+                    stride,
+                    downsample,
+                    first_dilation=prev_dilation,
+                    drop_path=DropPath(block_dpr) if block_dpr > 0.0 else None,
+                    **block_kwargs,
+                )
+            )
             prev_dilation = dilation
             inplanes = planes * block_fn.expansion
             net_block_idx += 1
@@ -365,18 +413,32 @@ class ResNet(Backbone):
         Global pooling type. One of 'avg', 'max', 'avgmax', 'catavgmax'
     """
 
-    def __init__(self, block_types, layers, in_chans=3,
-                 cardinality=1, base_width=64, stem_width=64,
-                 stem_type='', replace_stem_pool=False,
-                 output_stride=32, block_reduce_first=1,
-                 down_kernel_size=1, avg_down=False,
-                 act_layer=nn.ReLU,
-                 norm_layer=nn.BatchNorm2d,
-                 aa_layer=None, drop_rate=0.0, drop_path_rate=0.,
-                 drop_block_rate=0., global_pool='avg',
-                 avd = False,
-                 zero_init_last_bn=True, block_args=None,
-                 out_features=None):
+    def __init__(
+        self,
+        block_types,
+        layers,
+        in_chans=3,
+        cardinality=1,
+        base_width=64,
+        stem_width=64,
+        stem_type="",
+        replace_stem_pool=False,
+        output_stride=32,
+        block_reduce_first=1,
+        down_kernel_size=1,
+        avg_down=False,
+        act_layer=nn.ReLU,
+        norm_layer=nn.BatchNorm2d,
+        aa_layer=None,
+        drop_rate=0.0,
+        drop_path_rate=0.0,
+        drop_block_rate=0.0,
+        global_pool="avg",
+        avd=False,
+        zero_init_last_bn=True,
+        block_args=None,
+        out_features=None,
+    ):
         block_args = block_args or dict()
         assert output_stride in (8, 16, 32)
         # self.num_classes = num_classes
@@ -384,67 +446,88 @@ class ResNet(Backbone):
         super(ResNet, self).__init__()
 
         # Stem
-        deep_stem = 'deep' in stem_type
+        deep_stem = "deep" in stem_type
         inplanes = stem_width * 2 if deep_stem else 64
         if deep_stem:
             stem_chs = (stem_width, stem_width)
-            if 'tiered' in stem_type:
+            if "tiered" in stem_type:
                 stem_chs = (3 * (stem_width // 4), stem_width)
-            self.conv1 = nn.Sequential(*[
-                nn.Conv2d(in_chans, stem_chs[0], 3, stride=2, padding=1, bias=False),
-                norm_layer(stem_chs[0]),
-                act_layer(inplace=True),
-                nn.Conv2d(stem_chs[0], stem_chs[1], 3, stride=1, padding=1, bias=False),
-                norm_layer(stem_chs[1]),
-                act_layer(inplace=True),
-                nn.Conv2d(stem_chs[1], inplanes, 3, stride=1, padding=1, bias=False)])
+            self.conv1 = nn.Sequential(
+                *[
+                    nn.Conv2d(in_chans, stem_chs[0], 3, stride=2, padding=1, bias=False),
+                    norm_layer(stem_chs[0]),
+                    act_layer(inplace=True),
+                    nn.Conv2d(stem_chs[0], stem_chs[1], 3, stride=1, padding=1, bias=False),
+                    norm_layer(stem_chs[1]),
+                    act_layer(inplace=True),
+                    nn.Conv2d(stem_chs[1], inplanes, 3, stride=1, padding=1, bias=False),
+                ]
+            )
         else:
-            self.conv1 = nn.Conv2d(in_chans, inplanes, kernel_size=7,
-                                   stride=2, padding=3, bias=False)
+            self.conv1 = nn.Conv2d(in_chans, inplanes, kernel_size=7, stride=2, padding=3, bias=False)
         self.bn1 = norm_layer(inplanes)
         self.act1 = act_layer(inplace=True)
-        self.feature_info = [dict(num_chs=inplanes, reduction=2, module='act1')]
+        self.feature_info = [dict(num_chs=inplanes, reduction=2, module="act1")]
 
         # Stem Pooling
         if replace_stem_pool:
-            self.maxpool = nn.Sequential(*filter(None, [
-                nn.Conv2d(inplanes, inplanes, 3, stride=1 if aa_layer else 2, padding=1, bias=False),
-                aa_layer(channels=inplanes, stride=2) if aa_layer else None,
-                norm_layer(inplanes),
-                act_layer(inplace=True)
-            ]))
+            self.maxpool = nn.Sequential(
+                *filter(
+                    None,
+                    [
+                        nn.Conv2d(inplanes, inplanes, 3, stride=1 if aa_layer else 2, padding=1, bias=False),
+                        aa_layer(channels=inplanes, stride=2) if aa_layer else None,
+                        norm_layer(inplanes),
+                        act_layer(inplace=True),
+                    ],
+                )
+            )
         else:
             if aa_layer is not None:
-                self.maxpool = nn.Sequential(*[
-                    nn.MaxPool2d(kernel_size=3, stride=1, padding=1),
-                    aa_layer(channels=inplanes, stride=2)])
+                self.maxpool = nn.Sequential(
+                    *[nn.MaxPool2d(kernel_size=3, stride=1, padding=1), aa_layer(channels=inplanes, stride=2)]
+                )
             else:
                 self.maxpool = nn.MaxPool2d(kernel_size=3, stride=2, padding=1)
 
         # Feature Blocks
         channels = [64, 128, 256, 512]
         stage_modules, stage_feature_info = make_blocks(
-            block_types, channels, layers, inplanes, cardinality=cardinality, base_width=base_width,
-            output_stride=output_stride, reduce_first=block_reduce_first, avg_down=avg_down,
-            down_kernel_size=down_kernel_size, act_layer=act_layer, norm_layer=norm_layer, aa_layer=aa_layer,
-            drop_block_rate=drop_block_rate, drop_path_rate=drop_path_rate, **block_args)
+            block_types,
+            channels,
+            layers,
+            inplanes,
+            cardinality=cardinality,
+            base_width=base_width,
+            output_stride=output_stride,
+            reduce_first=block_reduce_first,
+            avg_down=avg_down,
+            down_kernel_size=down_kernel_size,
+            act_layer=act_layer,
+            norm_layer=norm_layer,
+            aa_layer=aa_layer,
+            drop_block_rate=drop_block_rate,
+            drop_path_rate=drop_path_rate,
+            **block_args,
+        )
         for stage in stage_modules:
             self.add_module(*stage)  # layer1, layer2, etc
         self.feature_info.extend(stage_feature_info)
 
         for n, m in self.named_modules():
             if isinstance(m, nn.BatchNorm2d):
-                nn.init.constant_(m.weight, 1.)
-                nn.init.constant_(m.bias, 0.)
+                nn.init.constant_(m.weight, 1.0)
+                nn.init.constant_(m.bias, 0.0)
         if zero_init_last_bn:
             for m in self.modules():
-                if hasattr(m, 'zero_init_last_bn'):
+                if hasattr(m, "zero_init_last_bn"):
                     m.zero_init_last_bn()
 
         out_features_names = ["res2", "res3", "res4", "res5"]
         self._out_feature_strides = dict(zip(out_features_names, [4, 8, 16, 32]))
         self._out_feature_channels = dict(
-            zip(out_features_names, [x * BLOCK_TYPE[block_types[0]].expansion for x in [64, 128, 256, 512]]))
+            zip(out_features_names, [x * BLOCK_TYPE[block_types[0]].expansion for x in [64, 128, 256, 512]])
+        )
         if out_features is None:
             self._out_features = out_features_names
         else:
@@ -452,9 +535,7 @@ class ResNet(Backbone):
 
     def output_shape(self):
         return {
-            name: ShapeSpec(
-                channels=self._out_feature_channels[name], stride=self._out_feature_strides[name]
-            )
+            name: ShapeSpec(channels=self._out_feature_channels[name], stride=self._out_feature_strides[name])
             for name in self._out_features
         }
 
@@ -503,6 +584,5 @@ def build_resnet_vd_backbone(cfg, input_shape):
         else:
             stage_blocks.append("bottleneck")
 
-    model = ResNet(stage_blocks, layers, stem_type="deep",
-                   stem_width=32, avg_down=True, norm_layer=norm)
+    model = ResNet(stage_blocks, layers, stem_type="deep", stem_width=32, avg_down=True, norm_layer=norm)
     return model

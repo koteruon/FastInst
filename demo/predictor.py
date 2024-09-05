@@ -13,7 +13,7 @@ from detectron2.utils.visualizer import ColorMode, Visualizer
 
 
 class VisualizationDemo(object):
-    def __init__(self, cfg, instance_mode=ColorMode.IMAGE, parallel=False):
+    def __init__(self, cfg, instance_mode=ColorMode.IMAGE, parallel=False, detect_left=False):
         """
         Args:
             cfg (CfgNode):
@@ -31,6 +31,7 @@ class VisualizationDemo(object):
             self.predictor = AsyncPredictor(cfg, num_gpus=num_gpu)
         else:
             self.predictor = DefaultPredictor(cfg)
+        self.detect_left = detect_left
 
     def run_on_image(self, image, confidence_threshold):
         """
@@ -79,7 +80,7 @@ class VisualizationDemo(object):
         """
         video_visualizer = VideoVisualizer(self.metadata, self.instance_mode)
 
-        def process_predictions(frame, predictions):
+        def process_predictions(frame, predictions, right_half_frame=None):
             frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
             if "panoptic_seg" in predictions:
                 panoptic_seg, segments_info = predictions["panoptic_seg"]
@@ -106,6 +107,10 @@ class VisualizationDemo(object):
                 )
 
             vis_frame = cv2.cvtColor(vis_frame.get_image(), cv2.COLOR_RGB2BGR)
+
+            if self.detect_left:
+                vis_frame = cv2.hconcat([vis_frame, right_half_frame])
+
             if method_flag == 1:
                 return vis_frame, prediction_draw_instance_predictions
             # Converts Matplotlib RGB format to OpenCV BGR format
@@ -133,7 +138,15 @@ class VisualizationDemo(object):
                 yield process_predictions(frame, predictions)
         else:
             for frame in frame_gen:
-                yield process_predictions(frame, self.predictor(frame))
+                if self.detect_left:
+                    full_frame = frame.copy()
+                    height, width = frame.shape[:2]
+                    left_half_frame = full_frame[:, : width // 2]
+                    right_half_frame = full_frame[:, width // 2 :]
+                    frame = left_half_frame
+                else:
+                    right_half_frame = None
+                yield process_predictions(frame, self.predictor(frame), right_half_frame)
 
 
 class AsyncPredictor:
