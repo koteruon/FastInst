@@ -109,83 +109,176 @@ def test_opencv_video_format(codec, file_ext):
 
 
 def stroke_mapping():
-    name_mapping = {
-        -1: "",
-        0: "正拍推擠",
-        1: "正拍拉球",
-        2: "正拍搓球",
-        3: "正拍殺球",
-        4: "反拍推擠",
-        5: "反拍拉球",
-        6: "反拍搓球",
-        7: "反拍擰球",
-    }
-
     frame_mapping = [-1] * (num_frames + 100)
 
+    # ideathon new video
+    name_mapping = {
+        -1: "",
+        1: "正拍",
+        2: "反拍",
+    }
+
     storke_mapping = [
-        (277, 316, 6),  # 1-0 2
-        (351, 382, 4),  # 4
-        (423, 468, 4),  # 6
-        (493, 514, 1),  # 8
-        (969, 1005, 2),  # 2-0 2
-        (1047, 1079, 4),  # 4
-        (1118, 1131, 1),  # 6
-        (1171, 1193, 0),  # 8
-        # 1-2 serve
-        (1773, 1814, 6),  # 3
-        (1826, 1862, 4),  # 5
-        (1905, 1932, 4),  # 7
-        (1972, 1990, 0),  # 9
-        # 1-3 serve
-        (2732, 2772, 6),  # 4-1 2
-        (2809, 2841, 0),  # 4
-        (2862, 2887, 0),  # 6
-        (3298, 3339, 6),  # 5-1 2 (應該是4但看起來像6)
-        # 2-5 serve
-        (3927, 3966, 4),  # 3
-        (4001, 4005, 4),  # 5
-        # 2-6 serve
-        (4357, 4398, 4),  # 3
-        (4413, 4449, 4),  # 5
-        (4491, 4582, 4),  # 7
-        (4545, 4580, 4),  # 9
-        (4618, 4651, 4),  # 11
-        (4683, 4719, 4),  # 13
-        (4995, 4980, 6),  # 7-2 2
-        (5025, 5046, 0),  # 4
-        (5493, 5527, 4),  # 7-3 2
-        (5575, 5561, 0),  # 4
-        (5632, 5667, 4),  # 6
-        (5718, 5730, 1),  # 8
-        # 4-7 serve
-        # 4-8 serve
-        (6729, 6758, 4),  # 3
-        (6782, 6828, 4),  # 5
-        (6860, 6901, 4),  # 7
-        (6915, 6949, 0),  # 9
-        (7530, 7563, 2),  # 9-4 2
-        (7607, 7645, 4),  # 4
-        (8041, 8087, 6),  # 10-4 2
-        (8107, 8143, 4),  # 4
-        (8180, 8214, 4),  # 6
-        (8242, 8298, 4),  # 8
-        (8325, 8335, 1),  # 10
-        # 5-10 serve
-        # 6-10 serve
-        (9221, 9259, 4),  # 3
-        (9289, 9331, 1),  # 5
-        (9348, 9386, 4),  # 7
-        (9432, 9463, 4),  # 9
-        (9893, 9923, 4),  # 10-7 2
-        # 4 miss
-        (10037, 10062, 4),  # 6
-        (10596, 10634, 4),  # 10-8 2
-        (10662, 10695, 4),  # 4
-        (10748, 10758, 1),  # 6
-        # 8-11 serve
-        (11697, 11714, 4),  # 3
+        # (127, 145, 1),  # 0-1 0
+        (215, 232, 1),  # 0-1 2
+        (280, 301, 2),  # 0-1 4
+        (347, 364, 2),  # 0-1 6
+        (398, 415, 2),  # 0-1 8
+        (460, 474, 2),  # 0-1 10
+        (534, 548, 2),  # 0-1 12
+        (599, 611, 1),  # 0-1 14
+        # (1064, 1083, 1),  # 1-1 0
+        (1666, 1690, 2),  # 2-1 1
+        (1742, 1758, 2),  # 2-1 3
+        (1817, 1835, 1),  # 2-1 5
+        (1870, 1881, 2),  # 2-1 7
+        (2512, 2532, 2),  # 3-1 1
+        (2596, 2609, 2),  # 3-1 3
+        # (3060, 3079, 1),  # 3-2 0
+        (3146, 3163, 2),  # 3-2 2
+        (3220, 3236, 2),  # 3-2 4
+        (3298, 3319, 1),  # 3-2 6
+        (3365, 3382, 1),  # 3-2 8
+        # (3999, 4017, 1),  # 3-3 0
+        (4075, 4095, 2),  # 3-3 2
+        (4155, 4173, 2),  # 3-3 4
+        (4235, 4256, 1),  # 3-3 6
+        (4836, 4862, 2),  # 4-3 1
+        (4943, 4963, 1),  # 4-3 3
+        (5436, 5459, 2),  # 5-3 1
+        # (5878, 5897, 1),  # 6-3 0
+        (5959, 5973, 2),  # 6-3 2
+        (6029, 6046, 2),  # 6-3 4
+        (6117, 6134, 1),  # 6-3 6
+        # (6562, 6577, 1),  # 6-4 0
+        (6641, 6657, 2),  # 6-4 2
+        (6715, 6729, 2),  # 6-4 4
+        (6787, 6803, 2),  # 6-4 6
+        (6866, 6887, 2),  # 6-4 8
+        (6951, 6968, 2),  # 6-4 10
+        (7029, 7045, 1),  # 6-4 12
+        (7608, 7633, 2),  # 6-5 1
+        (7688, 7706, 2),  # 6-5 3
+        (7767, 7783, 2),  # 6-5 5
+        (7834, 7846, 2),  # 6-5 7
+        (7897, 7910, 1),  # 6-5 9
+        (8431, 8451, 2),  # 6-6 1
+        (8511, 8527, 2),  # 6-6 3
+        (8577, 8590, 2),  # 6-6 5
+        (8627, 8641, 2),  # 6-6 7
+        (8689, 8701, 1),  # 6-6 9
+        # (9253, 9270, 1),  # 6-7 0
+        (9334, 9349, 1),  # 6-7 2
+        # (9969, 9986, 1),  # 6-8 0
+        (10052, 10067, 2),  # 6-8 2
+        (10123, 10141, 2),  # 6-8 4
+        (10208, 10226, 1),  # 6-8 6
+        (10272, 10287, 1),  # 6-8 8
+        (10815, 10839, 2),  # 6-9 1
+        (10898, 10916, 2),  # 6-9 3
+        (10973, 10988, 2),  # 6-9 5
+        (11049, 11066, 1),  # 6-9 7
+        (11453, 11474, 2),  # 7-9 1
+        (11538, 11554, 2),  # 7-9 3
+        (11604, 11614, 2),  # 7-9 5
+        # (12220, 12240, 1),  # 8-9 0
+        (12301, 12316, 2),  # 8-9 2
+        (12371, 12387, 2),  # 8-9 4
+        (12442, 12454, 1),  # 8-9 6
+        (12516, 12532, 1),  # 8-9 8
+        (12579, 12590, 2),  # 8-9 10
+        # 8-9 12 miss
+        # 8-9 14 miss
+        # 8-9 16 miss
+        # (13324, 13342, 1),  # 9-9 0
+        (13421, 13438, 1),  # 9-9 2
+        (13475, 13487, 2),  # 9-9 4
+        (13997, 14015, 2),  # 10-9 1
+        (14071, 14084, 2),  # 10-9 3
+        (14139, 14152, 2),  # 10-9 5
+        (14678, 14698, 2),  # 11-9 1
+        (14763, 14776, 2),  # 11-9 3
+        (14835, 14852, 2),  # 11-9 5
+        (14913, 14930, 1),  # 11-9 7
     ]
+
+    # ideathon old video
+
+    # name_mapping = {
+    #     -1: "",
+    #     0: "正拍推擠",
+    #     1: "正拍拉球",
+    #     2: "正拍搓球",
+    #     3: "正拍殺球",
+    #     4: "反拍推擠",
+    #     5: "反拍拉球",
+    #     6: "反拍搓球",
+    #     7: "反拍擰球",
+    # }
+
+    # storke_mapping = [
+    #     (277, 316, 6),  # 1-0 2
+    #     (351, 382, 4),  # 4
+    #     (423, 468, 4),  # 6
+    #     (493, 514, 1),  # 8
+    #     (969, 1005, 2),  # 2-0 2
+    #     (1047, 1079, 4),  # 4
+    #     (1118, 1131, 1),  # 6
+    #     (1171, 1193, 0),  # 8
+    #     # 1-2 serve
+    #     (1773, 1814, 6),  # 3
+    #     (1826, 1862, 4),  # 5
+    #     (1905, 1932, 4),  # 7
+    #     (1972, 1990, 0),  # 9
+    #     # 1-3 serve
+    #     (2732, 2772, 6),  # 4-1 2
+    #     (2809, 2841, 0),  # 4
+    #     (2862, 2887, 0),  # 6
+    #     (3298, 3339, 6),  # 5-1 2 (應該是4但看起來像6)
+    #     # 2-5 serve
+    #     (3927, 3966, 4),  # 3
+    #     (4001, 4005, 4),  # 5
+    #     # 2-6 serve
+    #     (4357, 4398, 4),  # 3
+    #     (4413, 4449, 4),  # 5
+    #     (4491, 4582, 4),  # 7
+    #     (4545, 4580, 4),  # 9
+    #     (4618, 4651, 4),  # 11
+    #     (4683, 4719, 4),  # 13
+    #     (4995, 4980, 6),  # 7-2 2
+    #     (5025, 5046, 0),  # 4
+    #     (5493, 5527, 4),  # 7-3 2
+    #     (5575, 5561, 0),  # 4
+    #     (5632, 5667, 4),  # 6
+    #     (5718, 5730, 1),  # 8
+    #     # 4-7 serve
+    #     # 4-8 serve
+    #     (6729, 6758, 4),  # 3
+    #     (6782, 6828, 4),  # 5
+    #     (6860, 6901, 4),  # 7
+    #     (6915, 6949, 0),  # 9
+    #     (7530, 7563, 2),  # 9-4 2
+    #     (7607, 7645, 4),  # 4
+    #     (8041, 8087, 6),  # 10-4 2
+    #     (8107, 8143, 4),  # 4
+    #     (8180, 8214, 4),  # 6
+    #     (8242, 8298, 4),  # 8
+    #     (8325, 8335, 1),  # 10
+    #     # 5-10 serve
+    #     # 6-10 serve
+    #     (9221, 9259, 4),  # 3
+    #     (9289, 9331, 1),  # 5
+    #     (9348, 9386, 4),  # 7
+    #     (9432, 9463, 4),  # 9
+    #     (9893, 9923, 4),  # 10-7 2
+    #     # 4 miss
+    #     (10037, 10062, 4),  # 6
+    #     (10596, 10634, 4),  # 10-8 2
+    #     (10662, 10695, 4),  # 4
+    #     (10748, 10758, 1),  # 6
+    #     # 8-11 serve
+    #     (11697, 11714, 4),  # 3
+    # ]
 
     for start, end, value in storke_mapping:
         for i in range(start, end + 1):
@@ -307,6 +400,8 @@ if __name__ == "__main__":
         paddle_L_area_list = []
         paddle_R_area_list = []
 
+        paddle_L_area_list_all = []
+
         bb_boxes_pad_L_center_list = []
         bb_boxes_pad_R_center_list = []
 
@@ -395,9 +490,9 @@ if __name__ == "__main__":
                 bb_pad_L_center_x = bb_boxes_L_pad[0] + bb_boxes_L_pad[2] / 2  # x
                 bb_pad_L_center_y = bb_boxes_L_pad[1] + bb_boxes_L_pad[3] / 2  # y
 
-                bb_boxes_pad_L_center_list.append((bb_pad_L_center_x, bb_pad_L_center_y))
+                bb_boxes_pad_L_center_list.append((frame_count, bb_pad_L_center_x, bb_pad_L_center_y))
             else:
-                bb_boxes_pad_L_center_list.append((bb_pad_L_center_x, bb_pad_L_center_y))
+                bb_boxes_pad_L_center_list.append((frame_count, None, None))
 
             # if bb_boxes_R_pad is not None:
             #     label_mask_pad[label_mask_pad == 1] = 100
@@ -498,11 +593,11 @@ if __name__ == "__main__":
                 pil_image = Image.fromarray(cv2.cvtColor(vis_frame, cv2.COLOR_BGR2RGB))
                 draw = ImageDraw.Draw(pil_image)
                 font_path = "ttf/MSJH.TTC"
-                font = ImageFont.truetype(font_path, 36)
+                font = ImageFont.truetype(font_path, 30)
                 draw.text(
-                    (10, 40), f"擊球類型：{name_mapping[frame_mapping[frame_count]]}", font=font, fill=(255, 255, 0)
+                    (10, 250), f"擊球類型：{name_mapping[frame_mapping[frame_count]]}", font=font, fill=(255, 255, 0)
                 )
-                draw.text((10, 100), "Frame: " + str(frame_count), font=font, fill=(255, 255, 0))
+                draw.text((10, 300), "Frame: " + str(frame_count), font=font, fill=(255, 255, 0))
                 vis_frame = cv2.cvtColor(np.array(pil_image), cv2.COLOR_RGB2BGR)
 
                 # Left Paddle
@@ -558,11 +653,12 @@ if __name__ == "__main__":
                 # Append the paddle area to the list
                 paddle_L_area_list.append(paddle_L_area)
                 paddle_R_area_list.append(paddle_R_area)
+                paddle_L_area_list_all.append((frame_count, paddle_L_area))
 
                 # Set the desired plot size
-                plot_width = 1200  # 1200  # 720       1920      1200
-                plot_height = 420  # 420
-                plot_x = 480  # 1200      0         720
+                plot_width = 880  # 1200  # 720       1920      1200
+                plot_height = 240  # 420
+                plot_x = 40  # 1200      0         720
                 plot_y = 0
 
                 # Determine the x-axis limits based on the frame count
@@ -587,7 +683,7 @@ if __name__ == "__main__":
 
                 # Set x-axis limits and y-axis limits for both subplots
                 x_lim_area = (x_min, x_max)
-                y_lim_area = (0, 3000)
+                y_lim_area = (0, 5000)
 
                 # Plot for the first subplot : Paddle_Area_L
                 area_table[0].plot(x_data, y_data_L, "bo-", markersize=1)  # Paddle_Area_L : Blue
@@ -649,12 +745,14 @@ if __name__ == "__main__":
                         max(color_component - 30, 0.0),  # g
                         color_component,  # r
                     )  # yellow to black gradient
-                    center = (int(bb_boxes_pad_L_center_list[i][0]), int(bb_boxes_pad_L_center_list[i][1]))
-                    cv2.circle(vis_frame_with_plot, center, 5, color, -1)
+                    center = (bb_boxes_pad_L_center_list[i][1], bb_boxes_pad_L_center_list[i][2])
+                    if center != (None, None):
+                        center = (int(center[0]), int(center[1]))
+                        cv2.circle(vis_frame_with_plot, center, 5, color, -1)
 
                     # Plot for the second subplot : Paddle_route
-                    x_lim_route = (200, 900)  #   (250, 650)       # (450, 700)      # (300, 650)
-                    y_lim_route = (200, 700)  #   (200, 500)       # (350, 600)      # (350, 650)
+                    x_lim_route = (200, 1000)  #   (250, 650)       # (450, 700)      # (300, 650)
+                    y_lim_route = (200, 1000)  #   (200, 500)       # (350, 600)      # (350, 650)
                     # Plot for the second subplot: Paddle_route
                     color = (
                         color_component / 255,  # r
@@ -665,7 +763,9 @@ if __name__ == "__main__":
                     for i in range(len(color_normalized)):
                         if color_normalized[i] >= 1:
                             color_normalized[i] == 1
-                    area_table[1].scatter([center[0]], [height - center[1]], c=[color], marker="o", s=50)
+
+                    if center != (None, None):
+                        area_table[1].scatter([center[0]], [height - center[1]], c=[color], marker="o", s=50)
 
                     area_table[1].set_xlim(x_lim_route)  # (x_lim_route) (0, 1)
                     area_table[1].set_ylim(y_lim_route)  # (y_lim_route)  (0, 1)
@@ -715,14 +815,6 @@ if __name__ == "__main__":
                 path_L = path_csv_str + "/" + csv_name_str + "_L_paddle.txt"
                 path_R = path_csv_str + "/" + csv_name_str + "_R_paddle.txt"
 
-                with open(path_L, "w", newline="") as csvfile_1:
-                    writer = csv.writer(csvfile_1)
-                    writer.writerow(paddle_L_area_list)
-                # with open(path_L, 'w', newline='') as csvfile_2:
-                #     writer = csv.writer(csvfile_2)
-                #     # writer.writerow(['right', 'area'])
-                #     writer.writerow(paddle_L_area_list)
-
                 plt.close(figure)
             else:
                 cv2.imshow(basename, vis_frame)
@@ -732,7 +824,6 @@ if __name__ == "__main__":
         ##################################################################################################################
 
         full_figure, full_are_table = plt.subplots(1, 1)
-        y_lim_area = (0, 3000)
         full_are_table.plot(range(0, frame_count), paddle_L_area_list, "bo-", markersize=1)
         full_are_table.set_ylim(y_lim_area)
         full_are_table.set_xlabel("Frame")
@@ -743,6 +834,29 @@ if __name__ == "__main__":
         plt.close(full_figure)
 
         ##################################################################################################################
+
+        with open(path_L, "w", newline="") as csvfile_1:
+            writer = csv.writer(csvfile_1)
+            for item in paddle_L_area_list_all:
+                writer.writerow(item)
+        # with open(path_L, 'w', newline='') as csvfile_2:
+        #     writer = csv.writer(csvfile_2)
+        #     # writer.writerow(['right', 'area'])
+        #     writer.writerow(paddle_L_area_list)
+
+        ##################################################################################################################
+
+        with open(path_L, "w", newline="") as csvfile_1:
+            writer = csv.writer(csvfile_1)
+            for item in paddle_L_area_list_all:
+                writer.writerow(item)
+
+        center_L = path_csv_str + "/" + csv_name_str + "_L_center.txt"
+
+        with open(center_L, "w", newline="") as csvfile_3:
+            writer = csv.writer(csvfile_3)
+            for item in bb_boxes_pad_L_center_list:
+                writer.writerow(item)
 
         video.release()
         if args.output:
