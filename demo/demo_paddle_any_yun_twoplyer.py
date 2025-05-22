@@ -594,10 +594,10 @@ if __name__ == "__main__":
                 draw = ImageDraw.Draw(pil_image)
                 font_path = "ttf/MSJH.TTC"
                 font = ImageFont.truetype(font_path, 30)
-                draw.text(
-                    (10, 250), f"擊球類型：{name_mapping[frame_mapping[frame_count]]}", font=font, fill=(255, 255, 0)
-                )
-                draw.text((10, 300), "Frame: " + str(frame_count), font=font, fill=(255, 255, 0))
+                # draw.text(
+                #     (10, 250), f"擊球類型：{name_mapping[frame_mapping[frame_count]]}", font=font, fill=(255, 255, 0)
+                # )
+                draw.text((10, 250), "Frame: " + str(frame_count), font=font, fill=(255, 255, 0))
                 vis_frame = cv2.cvtColor(np.array(pil_image), cv2.COLOR_RGB2BGR)
 
                 # Left Paddle
